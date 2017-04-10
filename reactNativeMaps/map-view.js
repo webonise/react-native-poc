@@ -202,7 +202,7 @@ export default class reactNativeMaps extends Component {
             initialCenterCoordinate={this.state.center}
             initialZoomLevel={this.state.zoom}
             initialDirection={0}
-            rotateEnabled={true}
+            rotateEnabled={false}
             scrollEnabled={true}
             zoomEnabled={true}
             styleURL={Mapbox.mapStyles.street}
