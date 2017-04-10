@@ -109,17 +109,15 @@ export default class reactNativeMaps extends Component {
     return {
       coordinates: [device.latitude, device.longitude],
       type: 'point',
-      title: `Name: ${device.NAME} , \n\nNode: ${this.trimNodeOrPort(deviceNode.id)} , \n\n Ports: \n ${_.map(nodePorts, (port) => {
+      title: `Name: ${device.NAME} , \n\nNode: ${deviceNode.fieldName} (${this.trimNodeOrPort(deviceNode.id)}) , \n\n Ports: \n ${_.map(nodePorts, (port) => {
         var connectedToPorts = _.filter(deviceData.result.edge, {sourceport: port.id, object: 'Link'})
-        return `${this.trimNodeOrPort(port.id)} connected to: ${_.map(connectedToPorts, (edge) => {
+        return `${port.fieldName} (${this.trimNodeOrPort(port.id)}) --> ${_.map(connectedToPorts, (edge) => {
           var targetPortNode = '';
-          if(edge.targetport) {
-            let portNode = _.find(deviceData.result.port, {id: edge.targetport})
-            if(portNode) {
-              targetPortNode = ` on Node(${this.trimNodeOrPort(portNode.nodeID)})`
-            }
+          let portNode = _.find(deviceData.result.port, {id: edge.targetport})
+          if(edge.targetport && portNode) {
+            targetPortNode = ` on Node ${portNode.fieldName} (${this.trimNodeOrPort(portNode.nodeID)})`
           }
-          return this.trimNodeOrPort(edge.targetport) + targetPortNode
+          return `${portNode.fieldName} (${this.trimNodeOrPort(edge.targetport)})` + targetPortNode
         })}\n`
       }).join('')}` ,
       id: 'foo'+Math.random()
@@ -209,7 +207,7 @@ export default class reactNativeMaps extends Component {
             zoomEnabled={true}
             showsUserLocation={true}
             userLocationVerticalAlignment={Mapbox.userLocationVerticalAlignment.top}
-            styleURL={Mapbox.mapStyles.hybrid}
+            styleURL={Mapbox.mapStyles.street}
             userTrackingMode={this.state.userTrackingMode}
             annotations={this.state.annotations}
             onChangeUserTrackingMode={this.onChangeUserTrackingMode}
