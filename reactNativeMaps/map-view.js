@@ -35,10 +35,10 @@ Mapbox.setAccessToken(accessToken);
 export default class reactNativeMaps extends Component {
   state = {
     center: {
-      latitude: 21.3303150734318,
-      longitude: 79.0576171875
+      latitude: 28.4595,
+      longitude: 77.0266
     },
-    zoom: 4,
+    zoom: 10,
     userTrackingMode: Mapbox.userTrackingMode.follow,
     annotations: []
   };
@@ -205,10 +205,7 @@ export default class reactNativeMaps extends Component {
             rotateEnabled={true}
             scrollEnabled={true}
             zoomEnabled={true}
-            showsUserLocation={true}
-            userLocationVerticalAlignment={Mapbox.userLocationVerticalAlignment.top}
             styleURL={Mapbox.mapStyles.street}
-            userTrackingMode={this.state.userTrackingMode}
             annotations={this.state.annotations}
             onChangeUserTrackingMode={this.onChangeUserTrackingMode}
             onRegionDidChange={this.onRegionDidChange}
