@@ -1,4 +1,4 @@
-# Built application files
+\# Built application files
 *.apk
 *.ap_
 
@@ -38,3 +38,4 @@ captures/
 
 # Keystore files
 *.jks
+node_modules/
