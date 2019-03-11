@@ -1,9 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 71365,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
   "expoServerNgrokUrl": "https://qq-bic.webo.expo.exp.direct",
   "packagerNgrokUrl": "https://packager.qq-bic.webo.expo.exp.direct",
-  "ngrokPid": 71379
+  "ngrokPid": 71878,
+  "webpackServerPort": null
 }
