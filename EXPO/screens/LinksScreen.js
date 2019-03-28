@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, StyleSheet,Text,View } from 'react-native';
+import { FlatList, StyleSheet,Text,View,Image } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 
 export default class LinksScreen extends React.Component {
@@ -26,7 +26,23 @@ export default class LinksScreen extends React.Component {
       <View style={{flex: 1, paddingTop:20}}>
         <FlatList
           data={this.state.userList}
-          renderItem={({item}) => <Text>{item.first_name}, {item.last_name}</Text>}
+          numColumns={3}
+          renderItem={({item}) =>
+          /*<>*/
+          <View style={{
+    flex: 1,
+    margin: 5,
+    minWidth: 50,
+    maxWidth: 150,
+    height: 304,
+    maxHeight:304,
+    backgroundColor: '#FFF',
+    }}>
+          <Text>{item.first_name} {item.last_name}</Text>
+          <Image source={{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}/>
+          </View>
+           /**/
+         /*</>}*/}
           keyExtractor={(item, index) => index.toString()}
         />
         <Text>Page number - {this.state.page}</Text>
