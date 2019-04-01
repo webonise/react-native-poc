@@ -1,5 +1,6 @@
 import React from 'react';
-import { FlatList, StyleSheet,Text,View,Image } from 'react-native';
+import { FlatList, StyleSheet,Text,View,Image,Button } from 'react-native';
+import { Icon } from 'react-native-elements'
 import { ExpoLinksView } from '@expo/samples';
 
 export default class GridScreen extends React.Component {
@@ -7,6 +8,7 @@ export default class GridScreen extends React.Component {
   constructor(props) {
     super(props);
     //this.getUserInfo = getUserInfo.bind(this);
+    //this.gotoNextPage= gotoNextPage.bind(this);
     this.state = {
       userList: [],
       page: 0,
@@ -27,40 +29,66 @@ export default class GridScreen extends React.Component {
         <FlatList
           data={this.state.userList}
           numColumns={3}
-          renderItem={({item}) =>
-          /*<>*/
-          <View style={{
-    flex: 1,
-    margin: 5,
-    minWidth: 50,
-    maxWidth: 150,
-    height: 304,
-    maxHeight:304,
-    backgroundColor: '#FFF',
-    }}>
-          <Text>{item.first_name} {item.last_name}</Text>
-          <Image source={{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}/>
-          </View>
-           /**/
-         /*</>}*/}
+          renderItem={this._renderItem}
           keyExtractor={(item, index) => index.toString()}
         />
+        <Button
+ raised
+ icon={{name: 'cached'}}
+ title='Next'
+ onPress ={this.gotoNextPage}
+  />
+
+  <Button
+raised
+icon={{name: 'cached'}}
+title='Previous'
+onPress ={this.gotoPreviousPage}
+/>
+
+
         <Text>Page number - {this.state.page}</Text>
         <Text>Number of records per page - { this.state.per_page}</Text>
         <Text>Total - {this.state.total_pages}</Text>
         <Text>Total Items - {this.state.total}</Text>
       </View>
-    //);
+
     );
   }
+
+  _renderItem = ({item}) => (
+
+      <View style={{
+          flex: 1,
+          margin: 5,
+          minWidth: 50,
+          maxWidth: 150,
+          height: 304,
+          maxHeight:304,
+          backgroundColor: '#FFF',
+      }}>
+      <Text>{item.first_name} {item.last_name}</Text>
+      <Image source={{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}/>
+      </View>
+  );
+
+  gotoNextPage = () => {
+    this.getUserInfo(this.state.page+1)
+  }
+
+
+  gotoPreviousPage = () =>{
+    this.getUserInfo(this.state.page-1)
+}
 
   componentWillMount(){
     this.getUserInfo(0)
   }
 
     getUserInfo (page){
-    console.log("getting user info")
-    const URL = `https://reqres.in/api/users`;
+    console.log("getting user info fior page " + page)
+
+    const URL = `https://reqres.in/api/users/?page=${page}`;
     return fetch(URL)
             .then((res) =>res.json())
             .then(data =>{
