@@ -1,8 +1,8 @@
-import React from 'react';
-import { StyleSheet, Image, Text, View } from 'react-native';
-import { WebBrowser } from 'expo';
-import { Ionicons } from '@expo/vector-icons';
-import Touchable from 'react-native-platform-touchable';
+import React from "react";
+import { StyleSheet, Image, Text, View } from "react-native";
+import { WebBrowser } from "expo";
+import { Ionicons } from "@expo/vector-icons";
+import Touchable from "react-native-platform-touchable";
 
 export default class LinksScreen extends React.Component {
   render() {
@@ -13,30 +13,26 @@ export default class LinksScreen extends React.Component {
         </Text>
 
         <Touchable
-          background={Touchable.Ripple('#ccc', false)}
+          background={Touchable.Ripple("#ccc", false)}
           style={styles.option}
-          onPress={this._handlePressWeboniseLink}>
-          <View style={{ flexDirection: 'row' }}>
+          onPress={this._handlePressWeboniseLink}
+        >
+          <View style={{ flexDirection: "row" }}>
             <View style={styles.optionIconContainer}>
-              <Image
-
-                fadeDuration={0}
-                style={{ width: 20, height: 20 }}
-              />
+              <Image fadeDuration={0} style={{ width: 20, height: 20 }} />
             </View>
             <View style={styles.optionTextContainer}>
-              <Text style={styles.optionText}>
-                Check Our Website out
-              </Text>
+              <Text style={styles.optionText}>Check Our Website out</Text>
             </View>
           </View>
         </Touchable>
 
         <Touchable
           style={styles.option}
-          background={Touchable.Ripple('#ccc', false)}
-          onPress={() => this.props.navigation.navigate('Grid')}>
-          <View style={{ flexDirection: 'row' }}>
+          background={Touchable.Ripple("#ccc", false)}
+          onPress={() => this.props.navigation.navigate("Grid")}
+        >
+          <View style={{ flexDirection: "row" }}>
             <View style={styles.optionIconContainer}>
               <Image
                 resizeMode="contain"
@@ -45,45 +41,42 @@ export default class LinksScreen extends React.Component {
               />
             </View>
             <View style={styles.optionTextContainer}>
-              <Text style={styles.optionText}>
-                Paginated API Grid
-              </Text>
+              <Text style={styles.optionText}>Paginated API Grid</Text>
             </View>
           </View>
         </Touchable>
-
       </View>
     );
   }
 
   _handlePressWeboniseLink = () => {
-    WebBrowser.openBrowserAsync('https://webonise.com');
+    WebBrowser.openBrowserAsync("https://webonise.com");
   };
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
+    paddingTop: 15
   },
   optionsTitleText: {
     fontSize: 16,
     marginLeft: 15,
     marginTop: 9,
-    marginBottom: 12,
+    marginBottom: 12
   },
   optionIconContainer: {
-    marginRight: 9,
+    marginRight: 9
   },
   option: {
-    backgroundColor: '#fdfdfd',
+    backgroundColor: "#fdfdfd",
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EDEDED',
+    borderBottomColor: "#EDEDED"
   },
   optionText: {
     fontSize: 15,
-    marginTop: 1,
-  },
+    marginTop: 1
+  }
 });
