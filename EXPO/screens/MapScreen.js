@@ -7,13 +7,17 @@ import {
   ActivityIndicator
 } from "react-native";
 import { Constants, Location, Permissions, MapView } from "expo";
-import { PROVIDER_GOOGLE } from "react-native-maps";
+import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 
 export default class MapScreen extends Component {
   state = {
     location: null,
     errorMessage: null,
-    loading: true
+    loading: true,
+    latLng: {
+      latitude: null,
+      longitude: null
+    }
   };
 
   mapStyle = [
@@ -261,6 +265,7 @@ export default class MapScreen extends Component {
       text = JSON.stringify(this.state.location);
     }
     if (this.state.location) {
+      console.log(this.state.latLng);
       return (
         <MapView
           style={{ flex: 1 }}
@@ -272,7 +277,14 @@ export default class MapScreen extends Component {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421
           }}
-        />
+        >
+          <Marker
+            coordinate={{
+              latitude: this.state.location.coords.latitude,
+              longitude: this.state.location.coords.longitude
+            }}
+          />
+        </MapView>
       );
     } else {
       return <ActivityIndicator size="small" color="#00ff00" />;
