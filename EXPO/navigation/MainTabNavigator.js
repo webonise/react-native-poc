@@ -10,6 +10,7 @@ import HomeScreen from "../screens/HomeScreen";
 import LinksScreen from "../screens/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import GridScreen from "../screens/GridScreen";
+import MapScreen from "../screens/MapScreen";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -31,7 +32,8 @@ HomeStack.navigationOptions = {
 
 const LinksStack = createStackNavigator({
   Links: LinksScreen,
-  Grid: GridScreen
+  Grid: GridScreen,
+  Map: MapScreen
 });
 
 LinksStack.navigationOptions = {

@@ -45,6 +45,25 @@ export default class LinksScreen extends React.Component {
             </View>
           </View>
         </Touchable>
+
+        <Touchable
+          style={styles.option}
+          background={Touchable.Ripple("#ccc", false)}
+          onPress={() => this.props.navigation.navigate("Map")}
+        >
+          <View style={{ flexDirection: "row" }}>
+            <View style={styles.optionIconContainer}>
+              <Image
+                resizeMode="contain"
+                fadeDuration={0}
+                style={{ width: 20, height: 20, marginTop: 1 }}
+              />
+            </View>
+            <View style={styles.optionTextContainer}>
+              <Text style={styles.optionText}>Maps</Text>
+            </View>
+          </View>
+        </Touchable>
       </View>
     );
   }
