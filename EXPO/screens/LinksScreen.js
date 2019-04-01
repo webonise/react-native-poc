@@ -1,36 +1,89 @@
 import React from 'react';
-import { FlatList, StyleSheet,Text,View,Button } from 'react-native';
-import { ExpoLinksView } from '@expo/samples';
+import { StyleSheet, Image, Text, View } from 'react-native';
+import { WebBrowser } from 'expo';
+import { Ionicons } from '@expo/vector-icons';
+import Touchable from 'react-native-platform-touchable';
 
- export default class LinksScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Links',
-  };
-
-   render() {
+export default class LinksScreen extends React.Component {
+  render() {
     return (
-      <FlatList
-        data={[{key: 'API Paginated Grid' },{key:'Carousel example'}]}
-        renderItem={this._renderItem}
-      />
+      <View>
+        <Text style={styles.optionsTitleText}>
+          Click on the Links to see the sample usage
+        </Text>
+
+        <Touchable
+          background={Touchable.Ripple('#ccc', false)}
+          style={styles.option}
+          onPress={this._handlePressWeboniseLink}>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={styles.optionIconContainer}>
+              <Image
+
+                fadeDuration={0}
+                style={{ width: 20, height: 20 }}
+              />
+            </View>
+            <View style={styles.optionTextContainer}>
+              <Text style={styles.optionText}>
+                Check Our Website out
+              </Text>
+            </View>
+          </View>
+        </Touchable>
+
+        <Touchable
+          style={styles.option}
+          background={Touchable.Ripple('#ccc', false)}
+          onPress={() => this.props.navigation.navigate('Grid')}>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={styles.optionIconContainer}>
+              <Image
+                resizeMode="contain"
+                fadeDuration={0}
+                style={{ width: 20, height: 20, marginTop: 1 }}
+              />
+            </View>
+            <View style={styles.optionTextContainer}>
+              <Text style={styles.optionText}>
+                Paginated API Grid
+              </Text>
+            </View>
+          </View>
+        </Touchable>
+
+      </View>
     );
   }
 
-  _renderItem = ({item}) => (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-       <Text>{item.key}</Text>
-       <Button
-         title="Go to Sample usage"
-         onPress={() => this.props.navigation.navigate('Grid')}
-       />
-     </View>
-  );
+  _handlePressWeboniseLink = () => {
+    WebBrowser.openBrowserAsync('https://webonise.com');
+  };
 }
 
- const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 15,
-    backgroundColor: '#fff',
+  },
+  optionsTitleText: {
+    fontSize: 16,
+    marginLeft: 15,
+    marginTop: 9,
+    marginBottom: 12,
+  },
+  optionIconContainer: {
+    marginRight: 9,
+  },
+  option: {
+    backgroundColor: '#fdfdfd',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EDEDED',
+  },
+  optionText: {
+    fontSize: 15,
+    marginTop: 1,
   },
 });

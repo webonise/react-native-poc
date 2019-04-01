@@ -28,6 +28,7 @@ HomeStack.navigationOptions = {
 
 const LinksStack = createStackNavigator({
   Links: LinksScreen,
+  Grid: GridScreen,
 });
 
 LinksStack.navigationOptions = {
