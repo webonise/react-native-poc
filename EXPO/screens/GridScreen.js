@@ -18,7 +18,7 @@ export default class GridScreen extends React.Component {
   }
 
   static navigationOptions = {
-    title: "Links"
+    title: "Paginated Grid Exam"
   };
 
   render() {
