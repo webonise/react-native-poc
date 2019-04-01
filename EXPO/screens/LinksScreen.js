@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet,Text,View,Button } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 
  export default class LinksScreen extends React.Component {
@@ -9,13 +9,22 @@ import { ExpoLinksView } from '@expo/samples';
 
    render() {
     return (
-      <ScrollView style={styles.container}>
-        {/* Go ahead and delete ExpoLinksView and replace it with your
-           * content, we just wanted to provide you with some helpful links */}
-        <ExpoLinksView />
-      </ScrollView>
+      <FlatList
+        data={[{key: 'API Paginated Grid' },{key:'Carousel example'}]}
+        renderItem={this._renderItem}
+      />
     );
   }
+
+  _renderItem = ({item}) => (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+       <Text>{item.key}</Text>
+       <Button
+         title="Go to Sample usage"
+         onPress={() => this.props.navigation.navigate('Grid')}
+       />
+     </View>
+  );
 }
 
  const styles = StyleSheet.create({
