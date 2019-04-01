@@ -1,13 +1,12 @@
 import React from "react";
-import { FlatList, StyleSheet, Text, View, Image, Button } from "react-native";
+import { FlatList, StyleSheet, Text, View, Image } from "react-native";
+import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements";
 import { ExpoLinksView } from "@expo/samples";
 
 export default class GridScreen extends React.Component {
   constructor(props) {
     super(props);
-    //this.getUserInfo = getUserInfo.bind(this);
-    //this.gotoNextPage= gotoNextPage.bind(this);
     this.state = {
       userList: [],
       page: 0,
@@ -18,7 +17,7 @@ export default class GridScreen extends React.Component {
   }
 
   static navigationOptions = {
-    title: "Paginated Grid Exam"
+    title: "Paginated Grid Example"
   };
 
   render() {
@@ -26,20 +25,20 @@ export default class GridScreen extends React.Component {
       <View style={{ flex: 1, paddingTop: 20 }}>
         <FlatList
           data={this.state.userList}
-          numColumns={3}
+          numColumns={1}
           renderItem={this._renderItem}
           keyExtractor={(item, index) => index.toString()}
         />
         <Button
           raised
-          icon={{ name: "cached" }}
+          icon={{ name: "navigate-next" }}
           title="Next"
           onPress={this.gotoNextPage}
         />
 
         <Button
           raised
-          icon={{ name: "cached" }}
+          icon={{ name: "navigate-before" }}
           title="Previous"
           onPress={this.gotoPreviousPage}
         />
@@ -69,7 +68,7 @@ export default class GridScreen extends React.Component {
       </Text>
       <Image
         source={{
-          uri: "https://facebook.github.io/react-native/docs/assets/favicon.png"
+          uri: item.avatar
         }}
       />
     </View>
