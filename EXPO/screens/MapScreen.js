@@ -265,26 +265,27 @@ export default class MapScreen extends Component {
       text = JSON.stringify(this.state.location);
     }
     if (this.state.location) {
-      console.log(this.state.latLng);
       return (
-        <MapView
-          style={{ flex: 1 }}
-          customMapStyle={this.mapStyle}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={{
-            latitude: this.state.location.coords.latitude,
-            longitude: this.state.location.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-          }}
-        >
-          <Marker
-            coordinate={{
+        <>
+          <MapView
+            style={{ flex: 1 }}
+            customMapStyle={this.mapStyle}
+            provider={PROVIDER_GOOGLE}
+            initialRegion={{
               latitude: this.state.location.coords.latitude,
-              longitude: this.state.location.coords.longitude
+              longitude: this.state.location.coords.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421
             }}
-          />
-        </MapView>
+          >
+            <Marker
+              coordinate={{
+                latitude: this.state.location.coords.latitude,
+                longitude: this.state.location.coords.longitude
+              }}
+            />
+          </MapView>
+        </>
       );
     } else {
       return <ActivityIndicator size="small" color="#00ff00" />;
