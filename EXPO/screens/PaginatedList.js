@@ -12,7 +12,8 @@ export default class PaginatedList extends React.Component {
       page: 0,
       per_page: 0,
       total: 0,
-      total_pages: 0
+      total_pages: 0,
+      refreshing: true
     };
   }
 
@@ -27,6 +28,10 @@ export default class PaginatedList extends React.Component {
           data={this.state.userList}
           numColumns={1}
           renderItem={this._renderItem}
+          onEndReachedThreshold={0.5}
+          refreshing={this.state.refreshing}
+          onRefresh={this._onRefresh}
+          onEndReached={this._onEndReached}
           keyExtractor={(item, index) => index.toString()}
         />
         <Text>Page number - {this.state.page}</Text>
@@ -60,6 +65,17 @@ export default class PaginatedList extends React.Component {
     </View>
   );
 
+  _onEndReached = () => {
+    console.log("reached the end");
+    this.state.page = this.state.page + 1;
+    this.getUserInfo();
+  };
+
+  _onRefresh = () => {
+    console.log("refreshing");
+    this.state.page = 0;
+    this.getUserInfo();
+  };
   componentWillMount() {
     this.getUserInfo();
   }
@@ -76,7 +92,8 @@ export default class PaginatedList extends React.Component {
           total: data.total,
           total_pages: data.total_pages,
           page: data.page,
-          userList: data.data
+          userList: data.data,
+          refreshing: false
         });
       })
       .catch(function(error) {
