@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, Text, View, Image } from "react-native";
 import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements";
 import { ExpoLinksView } from "@expo/samples";
+import Placeholder from "rn-placeholder";
 
 export default class GridScreen extends React.Component {
   constructor(props) {
@@ -12,7 +13,8 @@ export default class GridScreen extends React.Component {
       page: 0,
       per_page: 0,
       total: 0,
-      total_pages: 0
+      total_pages: 0,
+      isDataFetched: false
     };
   }
 
@@ -22,55 +24,47 @@ export default class GridScreen extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, paddingTop: 20 }}>
-        <FlatList
-          data={this.state.userList}
-          numColumns={1}
-          renderItem={this._renderItem}
-          keyExtractor={(item, index) => index.toString()}
-        />
-        <Button
-          raised
-          icon={{ name: "navigate-next" }}
-          title="Next"
-          onPress={this.gotoNextPage}
-        />
+      <View style={{ flex: 1, paddingTop: 2 }}>
+        <Placeholder.ImageContent
+          size={60}
+          animate="fade"
+          lineNumber={4}
+          lineSpacing={5}
+          lastLineWidth="50%"
+          onReady={this.state.isDataFetched}
+        >
+          <FlatList
+            data={this.state.userList}
+            numColumns={1}
+            renderItem={this._renderItem}
+            keyExtractor={(item, index) => index.toString()}
+          />
+          <Button
+            raised
+            icon={{ name: "navigate-next" }}
+            title="Next"
+            onPress={this.gotoNextPage}
+          />
 
-        <Button
-          raised
-          icon={{ name: "navigate-before" }}
-          title="Previous"
-          onPress={this.gotoPreviousPage}
-        />
+          <Button
+            raised
+            icon={{ name: "navigate-before" }}
+            title="Previous"
+            onPress={this.gotoPreviousPage}
+          />
 
-        <Text>Page number - {this.state.page}</Text>
-        <Text>Number of records per page - {this.state.per_page}</Text>
-        <Text>Total - {this.state.total_pages}</Text>
-        <Text>Total Items - {this.state.total}</Text>
+          <Text>Page number - {this.state.page}</Text>
+          <Text>Number of records per page - {this.state.per_page}</Text>
+          <Text>Total - {this.state.total_pages}</Text>
+          <Text>Total Items - {this.state.total}</Text>
+        </Placeholder.ImageContent>
       </View>
     );
   }
 
   _renderItem = ({ item }) => (
-    <View
-      style={{
-        flex: 1,
-        margin: 5,
-        minWidth: 50,
-        maxWidth: 150,
-        height: 304,
-        maxHeight: 304,
-        backgroundColor: "#FFF"
-      }}
-    >
-      <Text>
-        {item.first_name} {item.last_name}
-      </Text>
-      <Image
-        source={{
-          uri: item.avatar
-        }}
-      />
+    <View>
+      <Text>{item.first_name}</Text>
     </View>
   );
 
@@ -98,7 +92,8 @@ export default class GridScreen extends React.Component {
           total: data.total,
           total_pages: data.total_pages,
           page: data.page,
-          userList: data.data
+          userList: data.data,
+          isDataFetched: true
         });
         console.log(data.per_page);
       })

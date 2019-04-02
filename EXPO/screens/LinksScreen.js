@@ -69,7 +69,7 @@ export default class LinksScreen extends React.Component {
   }
 
   _handlePressWeboniseLink = () => {
-    WebBrowser.openBrowserAsync("https://webonise.com");
+    WebBrowser.openBrowserAsync("https://facebook.com");
   };
 }
 

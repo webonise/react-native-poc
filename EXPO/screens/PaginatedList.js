@@ -28,7 +28,6 @@ export default class PaginatedList extends React.Component {
           data={this.state.userList}
           numColumns={1}
           renderItem={this._renderItem}
-          onEndReachedThreshold={0.5}
           refreshing={this.state.refreshing}
           onRefresh={this._onRefresh}
           onEndReached={this._onEndReached}
@@ -66,17 +65,16 @@ export default class PaginatedList extends React.Component {
   );
 
   _onEndReached = () => {
-    console.log("reached the end");
+    console.log("reached the end.Current page is " + this.state.page);
     this.state.page = this.state.page + 1;
     this.getUserInfo();
   };
 
   _onRefresh = () => {
-    console.log("refreshing");
     this.state.page = 0;
     this.getUserInfo();
   };
-  componentWillMount() {
+  componentDidMount() {
     this.getUserInfo();
   }
 
