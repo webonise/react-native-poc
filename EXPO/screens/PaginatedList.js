@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, Text, View, Image } from "react-native";
 import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements";
 import { ExpoLinksView } from "@expo/samples";
+import Placeholder from "rn-placeholder";
 
 export default class PaginatedList extends React.Component {
   constructor(props) {
@@ -13,7 +14,8 @@ export default class PaginatedList extends React.Component {
       per_page: 0,
       total: 0,
       total_pages: 0,
-      refreshing: true
+      refreshing: false,
+      dataReady: false
     };
   }
 
@@ -30,7 +32,8 @@ export default class PaginatedList extends React.Component {
           renderItem={this._renderItem}
           refreshing={this.state.refreshing}
           onRefresh={this._onRefresh}
-          onEndReached={this._onEndReached}
+          //onEndReached={this._onEndReached}
+          //onEndReachedThreshold={0.9}
           keyExtractor={(item, index) => index.toString()}
         />
         <Text>Page number - {this.state.page}</Text>
@@ -42,25 +45,26 @@ export default class PaginatedList extends React.Component {
   }
 
   _renderItem = ({ item }) => (
-    <View
-      style={{
-        flex: 1,
-        margin: 5,
-        minWidth: 50,
-        maxWidth: 150,
-        height: 304,
-        maxHeight: 304,
-        backgroundColor: "#FFF"
-      }}
-    >
-      <Text>
-        {item.first_name} {item.last_name}
-      </Text>
-      <Image
-        source={{
-          uri: item.avatar
-        }}
-      />
+    <View>
+      <Placeholder.ImageContent
+        size={60}
+        animate="shine"
+        lineNumber={4}
+        lineSpacing={5}
+        lastLineWidth="30%"
+        onReady={this.state.dataReady}
+      >
+        <>
+          <Text>
+            {item.first_name} {item.last_name}
+          </Text>
+          <Image
+            source={{
+              uri: item.avatar
+            }}
+          />
+        </>
+      </Placeholder.ImageContent>
     </View>
   );
 
@@ -72,6 +76,7 @@ export default class PaginatedList extends React.Component {
 
   _onRefresh = () => {
     this.state.page = 0;
+    this.refreshing = true;
     this.getUserInfo();
   };
   componentDidMount() {
@@ -91,7 +96,8 @@ export default class PaginatedList extends React.Component {
           total_pages: data.total_pages,
           page: data.page,
           userList: data.data,
-          refreshing: false
+          refreshing: false,
+          dataReady: true
         });
       })
       .catch(function(error) {
