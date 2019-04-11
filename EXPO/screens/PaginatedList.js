@@ -1,21 +1,22 @@
 import React from "react";
-import { FlatList, StyleSheet, Text, View, Image } from "react-native";
+import {  FlatList, StyleSheet, Text, View, Image } from "react-native";
 import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements";
 import { ExpoLinksView } from "@expo/samples";
 import Placeholder from "rn-placeholder";
-
+const arr = []
 export default class PaginatedList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       userList: [],
-      page: 0,
+      page: 1,
       per_page: 0,
       total: 0,
       total_pages: 0,
       refreshing: false,
-      dataReady: false
+      dataReady: false,
+
     };
   }
 
@@ -31,9 +32,22 @@ export default class PaginatedList extends React.Component {
           numColumns={1}
           renderItem={this._renderItem}
           refreshing={this.state.refreshing}
+        //  onScrollBeginDrag={() => console.log("start")}
+        //  onScrollEndDrag = {() => console.log("ended")
+          /*this.state.page = this.state.page + 1;
+          this.getUserInfo(); */
+
+        //  }
           onRefresh={this._onRefresh}
-          //onEndReached={this._onEndReached}
-          //onEndReachedThreshold={0.9}
+          onEndReachedThreshold={0}
+        //  onEndReached={this.handleLoadMore}
+          onScrollEndDrag={() =>
+          //  this.state.page = this.state.page + 1;
+          // this.state.page = this.state.page+1;
+            this.getUserInfo(this.state.page+1)
+
+         }
+
           keyExtractor={(item, index) => index.toString()}
         />
         <Text>Page number - {this.state.page}</Text>
@@ -68,36 +82,38 @@ export default class PaginatedList extends React.Component {
     </View>
   );
 
-  _onEndReached = () => {
-    console.log("reached the end.Current page is " + this.state.page);
-    this.state.page = this.state.page + 1;
-    this.getUserInfo();
+  _onRefresh = () => {
+    this.state.page = 1;
+    this.state.userList = [];
+    this.refreshing = true;
+    this.getUserInfo(1);
   };
 
-  _onRefresh = () => {
-    this.state.page = 0;
-    this.refreshing = true;
-    this.getUserInfo();
-  };
   componentDidMount() {
-    this.getUserInfo();
+    this.getUserInfo(this.state.page);
   }
 
   getUserInfo(page) {
-    let currentPageNumber = this.state.page;
-    console.log("getting user info for page " + currentPageNumber);
+    if (this.state.page == 1) {
+        this.state.userList = []
+        console.log("empty list"+this.state.userList);
+    }
+    let currentPageNumber = page;
+    console.log("current page " + currentPageNumber);
     const URL = `https://reqres.in/api/users/?page=${currentPageNumber}`;
     return fetch(URL)
       .then(res => res.json())
       .then(data => {
+
         this.setState({
           per_page: data.per_page,
           total: data.total,
           total_pages: data.total_pages,
           page: data.page,
-          userList: data.data,
+          userList: [...this.state.userList, ...data.data],
+          // this.state.page == 1 ? data.data : [...this.state.userList, ...data.data],
           refreshing: false,
-          dataReady: true
+          dataReady: true,
         });
       })
       .catch(function(error) {
@@ -108,12 +124,46 @@ export default class PaginatedList extends React.Component {
         throw error;
       });
   }
+
+
+/*  handleLoadMore = () => {
+    if (!this.state.loading) {
+      this.page = this.page + 1;
+      console.log("Loadmore called " + this.state.page);
+      this.refreshing = true;
+      this.getUserInfo(this.page);
+    }
+  }; */
+
 }
 
+
+
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 15,
-    backgroundColor: "#fff"
-  }
+  bigBlue: {
+    color: 'blue',
+    fontWeight: 'bold',
+    fontSize: 30,
+  },
+  red: {
+    color: 'red',
+  },
 });
+
+/*
+export default class LotsOfStyles extends Component {
+  render() {
+    return (
+      <View>
+        <Text style={styles.red}>just red</Text>
+        <Text style={styles.bigBlue}>just bigBlue</Text>
+        <Text style={[styles.bigBlue, styles.red]}>bigBlue, then red</Text>
+        <Text style={[styles.red, styles.bigBlue]}>red, then bigBlue</Text>
+      </View>
+    );
+  }
+}
+
+// skip this line if using Create React Native App
+AppRegistry.registerComponent('react-native-poc', () => LotsOfStyles); */

@@ -2,9 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 69783,
-  "expoServerNgrokUrl": "https://qc-tcz.webo.expo.exp.direct",
-  "packagerNgrokUrl": "https://packager.qc-tcz.webo.expo.exp.direct",
-  "ngrokPid": 69802,
+  "packagerPid": 8427,
+  "expoServerNgrokUrl": "https://qc-tcz.aniketwebonise.expo.exp.direct",
+  "packagerNgrokUrl": "https://packager.qc-tcz.aniketwebonise.expo.exp.direct",
+  "ngrokPid": 8504,
   "webpackServerPort": null
 }
