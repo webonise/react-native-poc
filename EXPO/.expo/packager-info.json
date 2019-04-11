@@ -1,10 +1,10 @@
 {
-  "devToolsPort": 19002,
+  "devToolsPort": 19003,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 8427,
+  "packagerPid": 17398,
   "expoServerNgrokUrl": "https://qc-tcz.aniketwebonise.expo.exp.direct",
   "packagerNgrokUrl": "https://packager.qc-tcz.aniketwebonise.expo.exp.direct",
-  "ngrokPid": 8504,
+  "ngrokPid": 17449,
   "webpackServerPort": null
 }

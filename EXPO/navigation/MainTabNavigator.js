@@ -1,5 +1,6 @@
 import React from "react";
 import { Platform } from "react-native";
+import { ScreenOrientation } from 'expo';
 import {
   createStackNavigator,
   createBottomTabNavigator
