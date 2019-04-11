@@ -61,7 +61,7 @@ export default class PaginatedList extends React.Component {
   }
 
   _renderItem = ({ item }) => (
-    <View style = {{ flex:1,flexDirection: 'row', marginBottom: 3}} >
+    <View style = {{ flex:1,flexDirection: 'row', marginBottom: 80}} >
         <Image style= {{width: 100,height: 100, borderRadius: 100/2, margin:5}}
               source = {{uri: item.avatar}}
         />

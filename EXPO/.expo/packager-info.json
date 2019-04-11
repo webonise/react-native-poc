@@ -2,9 +2,9 @@
   "devToolsPort": 19003,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 18452,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "packagerPid": 19161,
+  "expoServerNgrokUrl": "https://he-gg5.aniketwebonise.expo.exp.direct",
+  "packagerNgrokUrl": "https://packager.he-gg5.aniketwebonise.expo.exp.direct",
+  "ngrokPid": 19210,
   "webpackServerPort": null
 }
