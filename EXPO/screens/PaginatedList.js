@@ -31,7 +31,6 @@ export default class PaginatedList extends React.Component {
           keyExtractor={(item, index) => index.toString()}
           ItemSeparatorComponent = {this.renderSeparator}
           data={this.state.userList}
-
           numColumns={1}
           renderItem={this._renderItem}
           refreshing={this.state.refreshing}
