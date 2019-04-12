@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import { Constants, Location, Permissions, MapView } from "expo";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import { Alert, PermissionsAndroid } from 'react-native';
+
 
 export default class MapScreen extends Component {
   state = {
@@ -237,6 +239,8 @@ export default class MapScreen extends Component {
   ];
   componentWillMount() {
     if (Platform.OS === "android" && !Constants.isDevice) {
+      console.log("Permission denied");
+
       this.setState({
         errorMessage:
           "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
@@ -246,9 +250,41 @@ export default class MapScreen extends Component {
     }
   }
 
+
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    console.log("Permission Status"+status);
+
     if (status !== "granted") {
+      console.log("12 Permission to access location was denied");
+
+      Alert.alert(
+     'Grant Permission',
+     'App needs location access to abc.',
+     [
+       {text: 'Cancel', onPress: () => {this.props.navigation.dismiss}, style: 'cancel'},
+       {text: 'OK', onPress: async () => {
+         const { status } = await Expo.Permissions.askAsync(Expo.Permissions.LOCATION);
+         if (status === "granted") {
+           const locatio = await Expo.Location.watchPositionAsync(
+             { enableHighAccuracy: true },
+             callback
+           );
+           return locatio;
+         } else {
+           alert("Please Turn On your Device GPS");
+         }
+       }},
+     ],
+     { cancelable: false }
+   )
+
+      this.setState({
+        errorMessage: "Permission to access location was not granted"
+      });
+    }else if (status === "denied") {
+      console.log("Permission to access location was denied");
+
       this.setState({
         errorMessage: "Permission to access location was denied"
       });
