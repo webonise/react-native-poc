@@ -260,7 +260,7 @@ export default class MapScreen extends Component {
 
       Alert.alert(
      'Grant Permission',
-     'App needs location access to abc.',
+     'App needs location access.',
      [
        {text: 'Cancel', onPress: () => {this.props.navigation.dismiss}, style: 'cancel'},
        {text: 'OK', onPress: async () => {
