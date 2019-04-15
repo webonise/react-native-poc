@@ -23,7 +23,9 @@ export default class PaginatedList extends React.Component {
   static navigationOptions = {
     title: "Paginated Grid Example"
   };
-
+  componentWillMount() {
+    ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
+  }
   render() {
     return (
       <View style={{ flex: 1, paddingTop: 20 }}>
@@ -61,7 +63,7 @@ export default class PaginatedList extends React.Component {
   }
 
   _renderItem = ({ item }) => (
-    <View style = {{ flex:1,flexDirection: 'row', marginBottom: 80}} >
+    <View style = {{ flex:1,flexDirection: 'row', marginBottom: 5}} >
         <Image style= {{width: 100,height: 100, borderRadius: 100/2, margin:5}}
               source = {{uri: item.avatar}}
         />
@@ -93,7 +95,7 @@ export default class PaginatedList extends React.Component {
     )
   }
   componentDidMount() {
-    ScreenOrientation.allowAsync(ScreenOrientation.Orientation.PORTRAIT);
+  //  ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
     this.initialInfo(1);
     //getUserInfo(this.state.page);
   }

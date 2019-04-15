@@ -3,6 +3,7 @@ import { StyleSheet, Image, Text, View } from "react-native";
 import { WebBrowser } from "expo";
 import { Ionicons } from "@expo/vector-icons";
 import Touchable from "react-native-platform-touchable";
+import { ScreenOrientation } from 'expo';
 
 export default class LinksScreen extends React.Component {
   render() {
@@ -71,6 +72,9 @@ export default class LinksScreen extends React.Component {
   _handlePressWeboniseLink = () => {
     WebBrowser.openBrowserAsync("https://facebook.com");
   };
+  componentWillMount() {
+    ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
+  }
 }
 
 const styles = StyleSheet.create({

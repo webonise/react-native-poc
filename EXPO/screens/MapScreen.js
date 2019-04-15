@@ -1,17 +1,23 @@
 import React, { Component } from "react";
+import AndroidOpenSettings from 'react-native-android-open-settings'
+//import Orientation from 'react-native-orientation';
+
 import {
+  Linking,
   Platform,
   Text,
   View,
   StyleSheet,
   ActivityIndicator
 } from "react-native";
-import { Constants, Location, Permissions, MapView } from "expo";
+import { Constants, Location, Permissions, MapView, ScreenOrientation } from "expo";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import { Alert, PermissionsAndroid } from 'react-native';
 
 
 export default class MapScreen extends Component {
+  //var Orientation = require('react-native-orientation');
+
   state = {
     location: null,
     errorMessage: null,
@@ -237,7 +243,12 @@ export default class MapScreen extends Component {
       ]
     }
   ];
+  // componentDidMount() {
+  //   Orientation.unlockAllOrientations();
+  // }
   componentWillMount() {
+    ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
+
     if (Platform.OS === "android" && !Constants.isDevice) {
       console.log("Permission denied");
 
@@ -262,7 +273,7 @@ export default class MapScreen extends Component {
      'Grant Permission',
      'App needs location access.',
      [
-       {text: 'Cancel', onPress: () => {this.props.navigation.dismiss}, style: 'cancel'},
+       {text: 'Cancel', onPress: () => this.props.navigation.goBack(null) , style: 'cancel'},
        {text: 'OK', onPress: async () => {
          const { status } = await Expo.Permissions.askAsync(Expo.Permissions.LOCATION);
          if (status === "granted") {
@@ -272,7 +283,24 @@ export default class MapScreen extends Component {
            );
            return locatio;
          } else {
-           alert("Please Turn On your Device GPS");
+
+           if (Platform.OS === 'ios') {
+             console.log("ios platfrom");
+               const url = 'app-settings:'
+           Linking.canOpenURL(url).then(supported => {
+               if (!supported) {
+                 console.log('Can\'t handle url: ' + url);
+               } else {
+                 return  Linking.openURL(url)
+               }
+             }).catch(err => console.error('An error occurred', err));
+
+             //Linking.openURL(url)
+           }else {
+             console.log("Android Permission called");
+              AndroidOpenSettings.locationSourceSettings()
+           }
+
          }
        }},
      ],
