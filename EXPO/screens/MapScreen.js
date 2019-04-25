@@ -8,17 +8,19 @@ import {
   Text,
   View,
   StyleSheet,
-  ActivityIndicator
+  ActivityIndicator,Button,
+  TextInput
 } from "react-native";
 import { Constants, Location, Permissions, MapView, ScreenOrientation } from "expo";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import { Alert, PermissionsAndroid } from 'react-native';
-
+import Geocoder from 'react-native-geocoding';
 
 export default class MapScreen extends Component {
   //var Orientation = require('react-native-orientation');
 
   state = {
+    text: null,
     location: null,
     errorMessage: null,
     loading: true,
@@ -243,9 +245,34 @@ export default class MapScreen extends Component {
       ]
     }
   ];
-  // componentDidMount() {
-  //   Orientation.unlockAllOrientations();
+  componentDidMount() {
+    Geocoder.init("AIzaSyD7JZmztK5wE-80P8t-_IOHZQinVtx4Dio");
+  }
+  // onPressLearnMore() {
+  // //  console.log(this.state.text);
   // }
+
+  _getLattLong(locationName) {
+    console.log("getLatsstLongs called "+locationName);
+    Geocoder.from(locationName)
+          .then(json => {
+              var location = json.results[0].geometry.location;
+              console.log("Location :::"+location);
+              this.pinPointSearchedLocation(location);
+          })
+          .catch(error => console.warn(error));
+  }
+
+  pinPointSearchedLocation(location) {
+    console.log("Pinporint location"+location);
+   this.setState({
+    latLng: {
+      latitude: location.latitude,
+      longitude: location.longitude
+    }
+    });
+  }
+
   componentWillMount() {
     ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
 
@@ -285,17 +312,16 @@ export default class MapScreen extends Component {
          } else {
 
            if (Platform.OS === 'ios') {
-             console.log("ios platfrom");
+               console.log("ios platfrom");
                const url = 'app-settings:'
-           Linking.canOpenURL(url).then(supported => {
-               if (!supported) {
-                 console.log('Can\'t handle url: ' + url);
-               } else {
-                 return  Linking.openURL(url)
-               }
-             }).catch(err => console.error('An error occurred', err));
+               Linking.canOpenURL(url).then(supported => {
+                 if (!supported) {
+                   console.log('Can\'t handle url: ' + url);
+                 } else {
+                   return  Linking.openURL(url)
+                 }
+               }).catch(err => console.error('An error occurred', err));
 
-             //Linking.openURL(url)
            }else {
              console.log("Android Permission called");
               AndroidOpenSettings.locationSourceSettings()
@@ -331,6 +357,22 @@ export default class MapScreen extends Component {
     if (this.state.location) {
       return (
         <>
+        <View style={{ flex: 1,}}>
+              <TextInput
+                style={styles.textContainer}
+                placeholder = "Enter text here..!"
+                onChangeText={(text) => this.setState({text})}
+              //  value={this.state.text}
+
+              />
+              <View style={styles.buttonContainer}>
+
+                  <Button
+                    onPress= { this._getLattLong.bind(this, this.state.text) }
+                    title="Search.."
+                    color="#841584"
+              />
+         </View>
           <MapView
             style={{ flex: 1 }}
             customMapStyle={this.mapStyle}
@@ -349,6 +391,17 @@ export default class MapScreen extends Component {
               }}
             />
           </MapView>
+          <View
+       style={{
+           position: 'absolute',//use absolute position to show button on top of the map
+           top: '50%', //for center align
+           alignSelf: 'flex-end' //for align to right
+       }}
+   >
+
+   </View>
+   </View>
+
         </>
       );
     } else {
@@ -369,5 +422,26 @@ const styles = StyleSheet.create({
     margin: 24,
     fontSize: 18,
     textAlign: "center"
-  }
+  },
+  buttonContainer: {
+      width: 100,
+      height: 60,
+      marginLeft: 180,
+      marginBottom:15,
+      alignItems: 'flex-end',
+    //   justifyContent: 'center',
+       marginRight: 50,
+       paddingTop: ( Platform.OS === 'ios' ) ? 20 : 0
+  },
+  textContainer: {
+      borderBottomWidth:1.5,
+      borderBottomColor: "black",
+      width: 200,
+      height: 60,
+      marginLeft: 15,
+      marginBottom:15,
+      alignItems: 'flex-start',
+      marginRight: 20,
+      paddingTop: ( Platform.OS === 'ios' ) ? 20 : 0
+  },
 });

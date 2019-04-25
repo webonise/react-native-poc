@@ -11,7 +11,7 @@ import {
   Text,
   View
 } from 'react-native';
-
+var SQLite = require('react-native-sqlite-storage') 
 export default class AwesomeProject extends Component {
   render() {
     return (
