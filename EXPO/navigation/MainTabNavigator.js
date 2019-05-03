@@ -29,7 +29,8 @@ HomeStack.navigationOptions = {
           : "md-information-circle"
       }
     />
-  )
+  ),  
+  
 };
 
 const LinksStack = createStackNavigator({

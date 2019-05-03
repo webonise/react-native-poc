@@ -6,140 +6,94 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  Button,
+  View,TouchableHighlight
 } from "react-native";
 import { WebBrowser } from "expo";
-
 import { MonoText } from "../components/StyledText";
+import { createStackNavigator, createDrawerNavigator,createAppContainer,DrawerNavigator } from "react-navigation";
+import LinksScreen from "../screens/LinksScreen";
+import Notifications from "../screens/Notifications";
 
-export default class HomeScreen extends React.Component {
+ class HomeScreen extends React.Component {
+  // static navigationOptions = {
+  //   header: null
+  // };
+
   static navigationOptions = {
-    header: null
-  };
+    title: 'Home ',
+    drawerIcon: ({tintColor}) => (
+      <Image 
+        style={{ width: 32, height: 32 }}
+        source={{uri: 'https://img.icons8.com/ios/50/000000/home-page.png'}}
+      />
+    )
+    // drawerLabel: 'Home',
+    // drawerIcon: ({ tintColor }) => (
+    //   <Image
+    //     source={require('../assets/images/DrawerIcon.png')}
+    //     style={[styles.icon, {tintColor: tintColor}]}
+    //   />
+    // ),
+  }; 
+
 
   render() {
-    return (
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-        >
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={require("../assets/images/webonise-logo.png")}
-              style={styles.welcomeImage}
-            />
-            <Text
-              onPress={this._navigateToExpoDocumentation}
-              style={styles.helpLinkText}
-            >
-              Powered By Expo.
+    return (<View style={{
+        flex: 1,
+        flexDirection: 'column',
+    }}> 
+    <HeaderNavigationBar {...this.props} />
+        <View style={{
+            flex: 1,
+            backgroundColor: '#4885ed',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }}>
+        
+            <Text style={{ fontWeight: 'bold', fontSize: 22, color: 'white' }}>
+                This is Home Screen
             </Text>
-          </View>
-
-          <View style={styles.getStartedContainer}>
-            <Text style={styles.getStartedText}>
-              This is a application to show case tothe power of the expo
-              toolchain. The links section will give a list of examples that can
-              be loaded in the expo app. it will navigate the user to the
-              appropriate section
-            </Text>
-          </View>
-        </ScrollView>
-      </View>
-    );
-  }
+            
+        </View>
+    </View>); 
+    
+}
 
   _navigateToExpoDocumentation = () => {
     WebBrowser.openBrowserAsync("https://docs.expo.io/versions/latest/");
   };
+  
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff"
-  },
-  developmentModeText: {
-    marginBottom: 20,
-    color: "rgba(0,0,0,0.4)",
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: "center"
-  },
-  contentContainer: {
-    paddingTop: 30
-  },
-  welcomeContainer: {
-    alignItems: "center",
-    marginTop: 10,
-    marginBottom: 20
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: "contain",
-    marginTop: 3,
-    marginLeft: -10
-  },
-  getStartedContainer: {
-    alignItems: "center",
-    marginHorizontal: 50
-  },
-  homeScreenFilename: {
-    marginVertical: 7
-  },
-  codeHighlightText: {
-    color: "rgba(96,100,109, 0.8)"
-  },
-  codeHighlightContainer: {
-    backgroundColor: "rgba(0,0,0,0.05)",
-    borderRadius: 3,
-    paddingHorizontal: 4
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    lineHeight: 24,
-    textAlign: "center"
-  },
-  tabBarInfoContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: "black",
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3
-      },
-      android: {
-        elevation: 20
-      }
-    }),
-    alignItems: "center",
-    backgroundColor: "#fbfbfb",
-    paddingVertical: 20
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    textAlign: "center"
-  },
-  navigationFilename: {
-    marginTop: 5
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: "center"
-  },
-  helpLink: {
-    paddingVertical: 15
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: "#2e78b7"
+class HeaderNavigationBar extends React.Component {
+  render() {
+      return (<View style={{
+          height: 70,
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          alignItems: 'center'
+      }}>
+          <TouchableHighlight style={{ marginLeft: 10, marginTop: 15 }}
+              onPress={() => { this.props.navigation.openDrawer() }}>
+              <Image
+                  style={{ width: 32, height: 32 }}
+                  source={{uri: 'https://png.icons8.com/ios/2x/menu-filled.png'}}
+              />
+          </TouchableHighlight>
+      </View>);
   }
-});
+}
+export default createAppContainer(createDrawerNavigator({
+  Home: {
+    screen: HomeScreen,
+  },
+  Links: {
+    screen: LinksScreen,
+  },
+  Notificatin: {
+    screen: Notifications,
+  },
+},{
+  initialRouteName:'Home'
+}));
+

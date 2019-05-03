@@ -6,6 +6,23 @@ import Touchable from "react-native-platform-touchable";
 import { ScreenOrientation } from 'expo';
 
 export default class LinksScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Links ',
+    drawerIcon: ({tintColor}) => (
+      <Image 
+        style={{ width: 32, height: 32 }}
+        source={{uri: 'https://img.icons8.com/ios/50/000000/link.png'}}
+      />
+    )
+    // drawerLabel: 'Home',
+    // drawerIcon: ({ tintColor }) => (
+    //   <Image
+    //     source={require('../assets/images/DrawerIcon.png')}
+    //     style={[styles.icon, {tintColor: tintColor}]}
+    //   />
+    // ),
+  }; 
+
   render() {
     return (
       <View>
