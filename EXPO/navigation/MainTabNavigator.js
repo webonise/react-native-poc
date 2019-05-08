@@ -1,5 +1,6 @@
 import React from "react";
 import { Platform } from "react-native";
+//import Icon from 'react-native-ionicons'
 import { ScreenOrientation } from 'expo';
 import {
   createStackNavigator,
@@ -28,6 +29,7 @@ HomeStack.navigationOptions = {
           ? `ios-information-circle${focused ? "" : "-outline"}`
           : "md-information-circle"
       }
+     // icon={require('./assets/images/icon50.png')}
     />
   ),  
   

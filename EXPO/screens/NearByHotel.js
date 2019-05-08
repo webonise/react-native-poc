@@ -1,24 +1,44 @@
 import React, { Component } from "react";
 import AndroidOpenSettings from 'react-native-android-open-settings'
-
+import AsyncImageAnimated from 'react-native-async-image-animated'
 import {
+  Button,
   Linking,
   Platform,
   Text,
   View,
   StyleSheet,
-  ActivityIndicator,Button,
-  TextInput
+  Image,
+  ActivityIndicator,
+  TextInput,
+  Dimensions,
+  Alert,
+  PermissionsAndroid
 } from "react-native";
 import { Constants, Location, Permissions, MapView, ScreenOrientation } from "expo";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
-import { Alert, PermissionsAndroid } from 'react-native';
 import Geocoder from 'react-native-geocoding';
+import { APIConst } from '../screens/Constants';
+import RequestManager from '../screens/RequestManager';
+import { createStackNavigator, createDrawerNavigator,createAppContainer,DrawerNavigator } from "react-navigation";
+
+const {width, height} = Dimensions.get('window')
+
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
 export default class NearByHotel extends Component {
-  //var Orientation = require('react-native-orientation');
+  static navigationOptions = {
+    drawerLabel: 'Near By Me',
+    drawerIcon:({tintColor}) => (
+      <Image 
+        style={{ width: 32, height: 32 }}
+        source={{uri: 'https://img.icons8.com/ios/50/000000/3-star-hotel.png'}}
+      />
+    )
+  };
 
   state = {
+    mapRegion: { latitude: 37.78825, longitude: -122.4324, latitudeDelta: 0.0922, longitudeDelta: 0.0421 },
     text: null,
     location: null,
     errorMessage: null,
@@ -26,9 +46,12 @@ export default class NearByHotel extends Component {
     latLng: {
       latitude: null,
       longitude: null
-    }
+    },
+    hotelsList: [],
+    latlongArr: [],
   };
 
+  
   mapStyle = [
     {
       elementType: "geometry",
@@ -247,37 +270,64 @@ export default class NearByHotel extends Component {
   componentDidMount() {
     Geocoder.init("AIzaSyD7JZmztK5wE-80P8t-_IOHZQinVtx4Dio");
   }
-  // onPressLearnMore() {
-  // //  console.log(this.state.text);
-  // }
-
-  _getLattLong(locationName) {
-    console.log("getLatsstLongs called "+locationName);
-    Geocoder.from(locationName)
-          .then(json => {
-              var location = json.results[0].geometry.location;
-              console.log("Location :::"+location);
-              this.pinPointSearchedLocation(location);
-          })
-          .catch(error => console.warn(error));
+ 
+  callNearByPlacesAPI(location) {
+   
+    const fullURL = APIConst.baseURL+JSON.stringify(location.coords.latitude)+','+JSON.stringify(location.coords.longitude)+APIConst.URNConst.nearByURN+APIConst.apiKey
+    console.log("FInal URL- "+fullURL);
+    RequestManager.requestGET(fullURL).then(res => res.json()).then(data => {
+       
+        console.log("API Response :: "+JSON.stringify(data.results));
+        this.setState({ 
+          location: location,
+          hotelsList: data.results,
+         });
+         //console.log(APIConst.basePhotoURL+data.results[0].photos.photo_reference+APIConst.photoURN+APIConst.apiKey);
+      })
+      .catch(function(error) {
+        console.log(
+          "There has been a problem with your fetch operation: " + error
+        );
+        throw error;
+      });
   }
 
-  pinPointSearchedLocation(location) {
-    console.log("Pinporint location"+location);
-   this.setState({
-    latLng: {
-      latitude: location.latitude,
-      longitude: location.longitude
+    pinPointSearchedLocation(location) {
+      console.log("Pinporint location"+location);
+    this.setState({
+      latLng: {
+        latitude: location.latitude,
+        longitude: location.longitude
+      }
+      });
     }
-    });
-  }
+
+    calculateDistanceBetLatAndLong(lat1, lon1, lat2, lon2, unit) {
+      if ((lat1 == lat2) && (lon1 == lon2)) {
+        return 0;
+      }
+      else {
+        var radlat1 = Math.PI * lat1/180;
+        var radlat2 = Math.PI * lat2/180;
+        var theta = lon1-lon2;
+        var radtheta = Math.PI * theta/180;
+        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        if (dist > 1) {
+          dist = 1;
+        }
+        dist = Math.acos(dist);
+        dist = dist * 180/Math.PI;
+        dist = dist * 60 * 1.1515;
+        if (unit=="K") { dist = dist * 1.609344 }
+        if (unit=="N") { dist = dist * 0.8684 }
+        return dist;
+      }
+    }
 
   componentWillMount() {
     ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
-
     if (Platform.OS === "android" && !Constants.isDevice) {
       console.log("Permission denied");
-
       this.setState({
         errorMessage:
           "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
@@ -343,7 +393,13 @@ export default class NearByHotel extends Component {
       });
     }
     let location = await Location.getCurrentPositionAsync({});
+    console.log("First Location"+JSON.stringify(location));
+    this.callNearByPlacesAPI(location);
     this.setState({ location: location });
+  };
+  _handleMapRegionChange = mapRegion => {
+    console.log("Map chnage lat"+this.state.latLng.latitude);
+   // this.setState({ mapRegion });
   };
 
   render() {
@@ -355,53 +411,68 @@ export default class NearByHotel extends Component {
     }
     if (this.state.location) {
       return (
-        <>
-        <View style={{ flex: 1,}}>
-              <TextInput
-                style={styles.textContainer}
-                placeholder = "Enter text here..!"
-                onChangeText={(text) => this.setState({text})}
-              //  value={this.state.text}
+        <ParallaxScrollView
+          backgroundColor="lightgray"
+          contentBackgroundColor="white"
+          parallaxHeaderHeight={300}  
+          renderForeground={() => (
+              <View style={{ height: height - 100, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <MapView
+                    style={{ alignSelf: 'stretch', height: height - 100 }}
+                    customMapStyle={this.mapStyle}
+                     provider={PROVIDER_GOOGLE}
+                   // region={this.state.mapRegion}
+                    initialRegion={{
+                      latitude: this.state.location.coords.latitude,
+                      longitude: this.state.location.coords.longitude,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421
+                    }}
+                    onRegionChange={this._handleMapRegionChange}
+                  >
+                   <Marker
+                      coordinate={{
+                          latitude: this.state.location.coords.latitude,
+                          longitude: this.state.location.coords.longitude
+                        }}
+                    />
+                  </MapView>
+              </View>
+          )}>
+          <View style={{height: 2650 }}>
+              {this.state.hotelsList.map(hotelItem => {
+                const imgeURL = 'https://maps.googleapis.com/maps/api/place/photo?photoreference='+encodeURIComponent(hotelItem.photos[0].photo_reference)+'&sensor=false&maxheight=100&maxwidth=100&key='+APIConst.apiKey
+                console.log("--ImageURL--   "+imgeURL);
+                return (
+                  <View key={hotelItem.id} style= {{ flex:1,flexDirection: 'row',height: 120, marginBottom: 5,borderBottomColor: '#D3D3D3',
+    borderBottomWidth: 1,margin: 8}}>
+                    <AsyncImageAnimated
+                      style={{
+                        
+                        alignSelf: 'stretch',
+                        height: 100,
+                        width: 100,
+                        resizeMethod: 'contain',
+                        resizeMode: 'cover',
+                     }}
+                      source={{
+                        uri: imgeURL
+                      }}
+                      placeholderSource= {{
+                        uri: 'https://img.icons8.com/color/100/000000/4-star-hotel.png'
+                      }}
+                     
+                    />
 
-              />
-              <View style={styles.buttonContainer}>
-
-                  <Button
-                    onPress= { this._getLattLong.bind(this, this.state.text) }
-                    title="Search.."
-                    color="#841584"
-              />
-         </View>
-          <MapView
-            style={{ flex: 1 }}
-            customMapStyle={this.mapStyle}
-            provider={PROVIDER_GOOGLE}
-            initialRegion={{
-              latitude: this.state.location.coords.latitude,
-              longitude: this.state.location.coords.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421
-            }}
-          >
-            <Marker
-              coordinate={{
-                latitude: this.state.location.coords.latitude,
-                longitude: this.state.location.coords.longitude
-              }}
-            />
-          </MapView>
-          <View
-       style={{
-           position: 'absolute',//use absolute position to show button on top of the map
-           top: '50%', //for center align
-           alignSelf: 'flex-end' //for align to right
-       }}
-   >
-
-   </View>
-   </View>
-
-        </>
+                    <View key={hotelItem.name} style = {{ flex:1, justifyContent: 'center', marginLeft: 5,backgroundColor: 'white' }}>
+                        <Text style={{fontSize: 20}}>{hotelItem.name}</Text>
+                        <Text style={{fontSize: 15}}>{hotelItem.vicinity}</Text>
+                    </View>
+                  </View>
+                ) 
+              })}
+          </View>
+       </ParallaxScrollView>
       );
     } else {
       return <ActivityIndicator size="small" color="#00ff00" />;
@@ -444,3 +515,14 @@ const styles = StyleSheet.create({
       paddingTop: ( Platform.OS === 'ios' ) ? 20 : 0
   },
 });
+
+
+
+
+/*
+
+TO set photos
+
+https://maps.googleapis.com/maps/api/place/photo?photoreference=CmRaAAAAwGHBaKceaw1AmVgGUJC_FI82VSvn8vVLzSqAxXHfd02_dD6B6PGP1MeC1kP6-qkuTLLRyfZei5yT9SzLXarwzG4dEoe4xJCrEzHCPwbmNPnjL1GLGsMR5aXyGqfqk4EfEhDCeUyQG65TVPloxb35ogQCGhQCVWjyv1jzBO9c3FyJkIRRRlJDuQ&sensor=false&maxheight=100&maxwidth=100&key=AIzaSyD7JZmztK5wE-80P8t-_IOHZQinVtx4Dio
+
+*/

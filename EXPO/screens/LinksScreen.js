@@ -59,35 +59,18 @@ export default class LinksScreen extends React.Component {
               />
             </View>
             <View style={styles.optionTextContainer}>
-              <Text style={styles.optionText}>Paginated API Grid</Text>
+              <Text style={styles.optionText}>Paginated API Grid with Local DB</Text>
             </View>
           </View>
         </Touchable>
 
-        <Touchable
-          style={styles.option}
-          background={Touchable.Ripple("#ccc", false)}
-          onPress={() => this.props.navigation.navigate("Map")}
-        >
-          <View style={{ flexDirection: "row" }}>
-            <View style={styles.optionIconContainer}>
-              <Image
-                resizeMode="contain"
-                fadeDuration={0}
-                style={{ width: 20, height: 20, marginTop: 1 }}
-              />
-            </View>
-            <View style={styles.optionTextContainer}>
-              <Text style={styles.optionText}>Maps</Text>
-            </View>
-          </View>
-        </Touchable>
+       
       </View>
     );
   }
 
   _handlePressWeboniseLink = () => {
-    WebBrowser.openBrowserAsync("https://facebook.com");
+    WebBrowser.openBrowserAsync("https://www.webonise.com/");
   };
   componentWillMount() {
     ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);

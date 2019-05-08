@@ -14,6 +14,7 @@ import { MonoText } from "../components/StyledText";
 import { createStackNavigator, createDrawerNavigator,createAppContainer,DrawerNavigator } from "react-navigation";
 import LinksScreen from "../screens/LinksScreen";
 import Notifications from "../screens/Notifications";
+import NearByHotel from "../screens/NearByHotel"
 
  class HomeScreen extends React.Component {
   // static navigationOptions = {
@@ -92,7 +93,9 @@ export default createAppContainer(createDrawerNavigator({
   },
   Notificatin: {
     screen: Notifications,
-  },
+  },NearByHotel: {
+    screen: NearByHotel,
+  }
 },{
   initialRouteName:'Home'
 }));
