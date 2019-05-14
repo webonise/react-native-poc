@@ -1,12 +1,11 @@
 import React from "react";
-import { Platform } from "react-native";
+import { Platform,Image } from "react-native";
 //import Icon from 'react-native-ionicons'
 import { ScreenOrientation } from 'expo';
 import {
   createStackNavigator,
-  createBottomTabNavigator
+  createBottomTabNavigator,
 } from "react-navigation";
-
 import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen";
 import LinksScreen from "../screens/LinksScreen";
@@ -20,7 +19,7 @@ const HomeStack = createStackNavigator({
 });
 
 HomeStack.navigationOptions = {
-  tabBarLabel: "Home",
+  tabBarLabel: "Near by me",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -29,7 +28,7 @@ HomeStack.navigationOptions = {
           ? `ios-information-circle${focused ? "" : "-outline"}`
           : "md-information-circle"
       }
-     // icon={require('./assets/images/icon50.png')}
+     
     />
   ),  
   
@@ -70,3 +69,4 @@ export default createBottomTabNavigator({
   LinksStack,
   SettingsStack
 });
+

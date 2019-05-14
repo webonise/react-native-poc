@@ -1,5 +1,5 @@
 import React from "react";
-import { ListView, FlatList, StyleSheet, Text, View, Image,Dimensions,Orientation } from "react-native";
+import { ListView, FlatList, StyleSheet, Text, View, Image,Dimensions,Orientation,ScrollView } from "react-native";
 import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements";
 import { ExpoLinksView } from "@expo/samples";
@@ -43,6 +43,9 @@ export default class PaginatedList extends React.Component {
      return (
       <View style={{ flex: 1, paddingTop: 20 }}>
         <OfflineNotice /> 
+       
+      
+
         <FlatList
           keyExtractor={(item, index) => index.toString()}
           ItemSeparatorComponent = {this.renderSeparator}
@@ -61,10 +64,13 @@ export default class PaginatedList extends React.Component {
          }
 
         />
+       
+        
+      
         <Text>Page number - {this.state.page}</Text>
         <Text>Number of records per page - {this.state.per_page}</Text>
         <Text>Total - {this.state.total_pages}</Text>
-        <Text>Total Items - {this.state.total}</Text>
+        <Text>Total Items - {this.state.total}</Text>  
       </View>
     );
   }
@@ -76,10 +82,10 @@ export default class PaginatedList extends React.Component {
          />
          <View style = {{ flex:1, justifyContent: 'center', marginLeft: 5 }}>
            <Text style= {{ fontSize: 18, color: 'green',marginBottom: 15}}>
-               {item.first_name}
+               Name:  {item.first_name}   
            </Text>
            <Text style= {{ fontSize: 18, color: 'red'}}>
-                 {item.last_name}
+                 Last Name: {item.last_name}
            </Text>
          </View>
      </View>
@@ -124,7 +130,6 @@ export default class PaginatedList extends React.Component {
       this.initialInfo(this.state.page);
     //}
     
-
   //  ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
     
   }
@@ -207,7 +212,7 @@ export default class PaginatedList extends React.Component {
         //console.log(items.avatar);
         db.transaction(
            tx => {
-             tx.executeSql('insert into UserTable (id, first_name, last_name,avatar, page, per_page, total, total_pages ) values (?, ?, ?, ?,?,?,?,?)', [id, firstName,lastName,avatar, page, per_page, total, total_pages]);
+             tx.executeSql('insert into UserTable (id, first_name, last_name,avatar, page, per_page, total, total_pages ) values (?, ?, ?,?,?,?,?,?)', [id, firstName,lastName,avatar, page, per_page, total, total_pages]);
              tx.executeSql('select * from UserTable', [], (_, { rows }) =>
                console.log(JSON.stringify(rows))
              );
@@ -289,12 +294,3 @@ const styles = StyleSheet.create({
   }
 });
 
-
-/*
-  <Button
-          onPress={this.fetchDB}
-          title="Fetch Data"
-          color="#fff"
-        /> 
-
-*/

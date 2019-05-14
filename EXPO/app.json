@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "AWESOME EXPO",
+    "name": "DemoApp",
     "slug": "EXPO",
     "privacy": "public",
     "sdkVersion": "32.0.0",
     "platforms": ["ios", "android"],
     "version": "1.0.0",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/1234.png",
     "orientation": "default",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -18,7 +18,11 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.weboniselab.DemoReactApp"
+    },
+    "android": {
+      "package": "com.weboniselab.DemoReactApp"
     }
   }
 }

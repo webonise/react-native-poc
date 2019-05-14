@@ -14,13 +14,6 @@ export default class LinksScreen extends React.Component {
         source={{uri: 'https://img.icons8.com/ios/50/000000/link.png'}}
       />
     )
-    // drawerLabel: 'Home',
-    // drawerIcon: ({ tintColor }) => (
-    //   <Image
-    //     source={require('../assets/images/DrawerIcon.png')}
-    //     style={[styles.icon, {tintColor: tintColor}]}
-    //   />
-    // ),
   }; 
 
   render() {
