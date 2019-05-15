@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "DemoApp",
+    "name": "Webo Native Gallery",
     "slug": "EXPO",
     "privacy": "public",
     "sdkVersion": "32.0.0",
@@ -9,9 +9,9 @@
     "icon": "./assets/images/1234.png",
     "orientation": "default",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/splashWebonise.png",
+    // "resizeMode": "contain",
+      "backgroundColor": "#ffffff",
     },
     "updates": {
       "fallbackToCacheTimeout": 0

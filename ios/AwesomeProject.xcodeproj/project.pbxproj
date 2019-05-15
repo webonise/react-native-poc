@@ -40,7 +40,6 @@
 		91A2B78ED80785E7A5A38372 /* libPods-AwesomeProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434A949854D08A1BDA67803F /* libPods-AwesomeProject.a */; };
 		C8280ECD5A969EDC78588B3D /* libPods-AwesomeProjectTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E30CA5F190520A7E226B7E46 /* libPods-AwesomeProjectTests.a */; };
 		E5B39DBD199C7AC3AB2F957E /* libPods-AwesomeProject-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78D06DD82BAA294D223F3D9F /* libPods-AwesomeProject-tvOSTests.a */; };
-		F128FD782265D7BB00F825A9 /* libreact-native-sqlite-storage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F128FD772265D7BB00F825A9 /* libreact-native-sqlite-storage.a */; };
 		F128FE4C2265F7B900F825A9 /* reactDemoInfoDB.db in Resources */ = {isa = PBXBuildFile; fileRef = F128FE4B2265F7B500F825A9 /* reactDemoInfoDB.db */; };
 		F1509B842265B130005DAF44 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F1509B6A2265B130005DAF44 /* libsqlite3.0.tbd */; };
 /* End PBXBuildFile section */
@@ -330,7 +329,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F128FD782265D7BB00F825A9 /* libreact-native-sqlite-storage.a in Frameworks */,
 				F1509B842265B130005DAF44 /* libsqlite3.0.tbd in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
