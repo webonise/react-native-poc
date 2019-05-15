@@ -54,14 +54,18 @@ export default class PaginatedList extends React.Component {
           renderItem={this._renderItem}
           refreshing={this.state.refreshing}
           onRefresh={this._onRefresh}
-          onEndReachedThreshold={0}
-          onScrollEndDrag={() =>
+         /* onScrollEndDrag={() =>
           //  this.state.page = this.state.page + 1;
           // this.state.page = this.state.page+1;
            // console.log("on scroll called")
             this.getUserInfo(this.state.page)
 
+          } */
+         onEndReached = {()=>
+          this.getUserInfo(this.state.page)
          }
+         onEndReachedThreshold={0}
+
 
         />
        
