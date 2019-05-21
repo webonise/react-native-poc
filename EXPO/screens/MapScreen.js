@@ -17,7 +17,6 @@ import { Alert, PermissionsAndroid } from 'react-native';
 import Geocoder from 'react-native-geocoding';
 
 export default class MapScreen extends Component {
-  //var Orientation = require('react-native-orientation');
 
   state = {
     text: null,
@@ -248,9 +247,6 @@ export default class MapScreen extends Component {
   componentDidMount() {
     Geocoder.init("AIzaSyD7JZmztK5wE-80P8t-_IOHZQinVtx4Dio");
   }
-  // onPressLearnMore() {
-  // //  console.log(this.state.text);
-  // }
 
   _getLattLong(locationName) {
     console.log("getLatsstLongs called "+locationName);

@@ -21,5 +21,3 @@ export {
    export {
       APIConst
    };
-
-//sudo react-native run-ios --simulator= "iPhone Xs Max"
