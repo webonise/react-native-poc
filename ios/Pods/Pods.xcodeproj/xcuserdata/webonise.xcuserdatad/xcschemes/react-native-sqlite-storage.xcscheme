@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D116FB2311ACF6794B389CE91B0ABEF9"
+               BlueprintIdentifier = "2CA98F25D06C8560FE12672F39CB9A44"
                BuildableName = "libreact-native-sqlite-storage.a"
                BlueprintName = "react-native-sqlite-storage"
                ReferencedContainer = "container:Pods.xcodeproj">

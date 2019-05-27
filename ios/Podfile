@@ -7,6 +7,9 @@ target 'AwesomeProject' do
 
   pod 'React', :path => '../node_modules/react-native'
   pod 'react-native-sqlite-storage', :path => '../node_modules/react-native-sqlite-storage'
+  #pod 'EXLocation', path: '../../node_modules/expo-location/ios/EXLocation'
+  pod 'ReactNativePermissions', :path => '../node_modules/react-native-permissions'
+
 
 
 

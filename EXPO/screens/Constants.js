@@ -1,3 +1,5 @@
+import {Platform} from 'react-native';
+
 var localDB ={
     dbName : 'reactDemoInfoDB.db',
     tableName : {
@@ -5,7 +7,7 @@ var localDB ={
     }
   }
 
-export {
+  export {
      localDB
    };
 
@@ -21,3 +23,4 @@ export {
    export {
       APIConst
    };
+

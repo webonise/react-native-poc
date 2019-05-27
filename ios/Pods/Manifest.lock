@@ -10,21 +10,27 @@ PODS:
     - React/jschelpers
   - React/jschelpers (0.41.0)
   - React/yoga (0.41.0)
+  - ReactNativePermissions (1.1.1):
+    - React
 
 DEPENDENCIES:
   - React (from `../node_modules/react-native`)
   - react-native-sqlite-storage (from `../node_modules/react-native-sqlite-storage`)
+  - ReactNativePermissions (from `../node_modules/react-native-permissions`)
 
 EXTERNAL SOURCES:
   React:
     :path: "../node_modules/react-native"
   react-native-sqlite-storage:
     :path: "../node_modules/react-native-sqlite-storage"
+  ReactNativePermissions:
+    :path: "../node_modules/react-native-permissions"
 
 SPEC CHECKSUMS:
   React: f290d57d4e567e69ef5a231ff461dbf9dac8da46
   react-native-sqlite-storage: e2514e75e65458cc2c6590d181bd1947ec6f4e3f
+  ReactNativePermissions: 2e324bb3baf12702e3ec27f76c8ae1158fa69fc6
 
-PODFILE CHECKSUM: 4fa0d12f5c39e5e14406b92c870c933339161fc8
+PODFILE CHECKSUM: 62c1e313d494618e9bb7689e5e808ff0ae3bf6e0
 
 COCOAPODS: 1.6.1

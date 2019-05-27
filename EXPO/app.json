@@ -22,7 +22,8 @@
       "bundleIdentifier": "com.weboniselab.DemoReactApp"
     },
     "android": {
-      "package": "com.weboniselab.DemoReactApp"
+      "package": "com.weboniselab.DemoReactApp",
+      "permissions": ["ACCESS_FINE_LOCATION"]
     }
   }
 }

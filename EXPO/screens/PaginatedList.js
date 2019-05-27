@@ -71,7 +71,7 @@ export default class PaginatedList extends React.Component {
          onEndReached = {()=>
             this.callLoadMore()
          }
-         onEndReachedThreshold={2}
+         onEndReachedThreshold={0.1}
         />
         <Text>Page number - {this.state.page}</Text>
         <Text>Number of records per page - {this.state.per_page}</Text>
