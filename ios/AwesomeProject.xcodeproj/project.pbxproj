@@ -305,6 +305,13 @@
 			remoteGlobalIDString = 9D23B34F1C767B80008B4819;
 			remoteInfo = ReactNativePermissions;
 		};
+		F1B94396229D3DA2003B4468 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 59E3902E4B3E4756ACA84BAB /* RCTCamera.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4107012F1ACB723B00C6AA39;
+			remoteInfo = RCTCamera;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -805,6 +812,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		F1B9438F229D3DA2003B4468 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F1B94397229D3DA2003B4468 /* libRCTCamera.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F1F265872264AE87007047E4 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -949,6 +964,10 @@
 				{
 					ProductGroup = 5E91572E1DD0AC6500FF2AA8 /* Products */;
 					ProjectRef = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
+				},
+				{
+					ProductGroup = F1B9438F229D3DA2003B4468 /* Products */;
+					ProjectRef = 59E3902E4B3E4756ACA84BAB /* RCTCamera.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;
@@ -1240,6 +1259,13 @@
 			fileType = archive.ar;
 			path = libReactNativePermissions.a;
 			remoteRef = F1838D092297E8A700D256E9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F1B94397229D3DA2003B4468 /* libRCTCamera.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTCamera.a;
+			remoteRef = F1B94396229D3DA2003B4468 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
