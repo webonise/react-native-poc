@@ -13,6 +13,7 @@
   "dependencies": {
     "@expo/samples": "2.1.1",
     "expo": "^32.0.0",
+    "expo-local-authentication": "^5.0.0",
     "expo-location": "^4.0.0",
     "expo-sqlite": "^4.0.0",
     "expo-sqlite-orm": "^1.4.1",

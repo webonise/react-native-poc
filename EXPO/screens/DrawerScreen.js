@@ -7,7 +7,7 @@ import { DrawerActions } from 'react-navigation';
 import {StyleSheet, Platform} from 'react-native';
 import LinksScreen from "../screens/LinksScreen";
 import HomeScreen from "../screens/Notifications";
-import NearByHotel from "../screens/NearByHotel"
+//import NearByHotel from "../screens/NearByHotel"
 
 class DrawerScreen extends Component {
   navigateToScreen = (route) => () => {
@@ -30,15 +30,10 @@ class DrawerScreen extends Component {
             </View>
             <View style={styles.menuItem}>
               <Text onPress={this.navigateToScreen('LinkScreen')}>
-              Link
+                 Link
               </Text>
             </View>
-            <View style={styles.menuItem}>
-              <Image source={{uri:'https://img.icons8.com/ios/60/000000/google-nearby.png'}}/>
-              <Text onPress={this.navigateToScreen('NearByHotel')}>
-                Near By Restaurants
-              </Text>
-            </View>
+             
           </View>
         </ScrollView>
       </View>

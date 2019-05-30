@@ -42,8 +42,8 @@ export default class Notifications extends React.Component {
 
     state = {
       isImageSet: false,
-      image: 'https://img.icons8.com/ios/150/000000/user-male-circle.png',
-      cameraImage:'https://img.icons8.com/ios/150/000000/user-male-circle.png',
+      cameraImage: this.getImageFromDBOrPlaceHolder() ? this.getImageFromDBOrPlaceHolder() :'https://img.icons8.com/ios/150/000000/user-male-circle.png',
+      image: this.getImageFormSecureStorage() ? this.getImageFormSecureStorage() :'https://img.icons8.com/ios/150/000000/user-male-circle.png', //gallary
       isCameraAllowed: false,
       isGallaryAllows: false,
       isCameraOrGallary: false,    
@@ -175,9 +175,9 @@ export default class Notifications extends React.Component {
                         <TouchableHighlight 
                             style ={{
                                 height: 40,
-                                width:160,
+                                width:220,
                                 borderRadius:10,
-                                backgroundColor : "yellow",
+                             //   backgroundColor : "yellow",
                                 marginLeft :20,
                                 marginRight:20,
                                 marginTop :75
@@ -218,17 +218,53 @@ export default class Notifications extends React.Component {
           })
       }
 
+      getImageFromDBOrPlaceHolder() {
+
+        var isAvilable = false
+        fetchDataFromAsynch('profileImage').then( (profile) => {
+         
+          if (profile !== null) {
+            isAvilable = true
+            console.log('Fetched URL'+profile);
+            this.setState({ cameraImage: profile,isCameraAllowed: false,isShowPicker:false  });
+          }
+        }).catch((error) => {
+          console.log('EXception URL'+error); 
+        })
+
+        return isAvilable
+        
+      }
+
+      getImageFormSecureStorage() {
+        var isGallaryAvilable = false
+
+         fetchDataFromSecureStore('ProfilePic').then( (profileImage) => {
+
+          if (profileImage !== null) {
+          
+            console.log('Seure URL- '+profileImage);
+            this.setState({ image: profileImage, isCameraAllowed: false,isShowPicker:false  });
+            isGallaryAvilable = true
+          }
+    
+        }).catch((error) => {
+          console.log('EXception SeureStore'+error); 
+        })  
+        return isGallaryAvilable
+        
+      }
+       
+
      /********* SecureStore DB Fetch ************/
 
       setImageFromSecureStore() {
 
         fetchDataFromSecureStore('ProfilePic').then( (profileImage) => {
-          console.log('Seure URL'+JSON.stringify(profileImage));
           this.setState({ image: profileImage,cameraImage: profileImage,isCameraAllowed: false,isShowPicker:false  });
         }).catch((error) => {
           console.log('EXception SeureStore'+error); 
         })
-
       }
 
     callCameraOrGallary = (selectedOption) => {
@@ -297,7 +333,9 @@ export default class Notifications extends React.Component {
       }
     }
     didSelectCancel = () => {
-      this.setState({ image: null,cameraImage: null,isCameraAllowed: false  });
+     // this.setState({ image: null,cameraImage: null,isCameraAllowed: false  });
+     this.setState({ isCameraAllowed: false,isShowPicker:false  });
+
     }
 
     didSelectRetake = () => {
@@ -333,6 +371,7 @@ export default class Notifications extends React.Component {
     },text: {
       fontSize: 16,
       alignSelf: 'center',
+      fontWeight: 'bold',
      // color: 'red'
    },buttonStyle: {
      width:100,
