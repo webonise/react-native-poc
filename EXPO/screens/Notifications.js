@@ -13,18 +13,19 @@ import {
 } from "react-native";
 
 import {Camera, Permissions,ImagePicker } from 'expo';
-import { storeDataInAsynch, fetchDataFromAsynch, storeDataInSecureStore, fetchDataFromSecureStore} from '../screens/Constants';
+import { storeDataInAsynch, fetchDataFromAsynch, storeDataInSecureStore, fetchDataFromSecureStore,KeyConst,URICONST} from '../screens/Constants';
+import STRING_CONSTANTS from '../constants/STRING_CONSTANTS';
 
 export default class Notifications extends React.Component {
     static navigationOptions = {
-      drawerLabel: 'Notifications',
+      drawerLabel: STRING_CONSTANTS.NOTIFICATIONS_TITLE,
       drawerIcon:({tintColor}) => (
         <Image 
           style={{ width: 32, height: 32 }}
-          source={{uri: 'https://img.icons8.com/ios/50/000000/bell.png'}}
+          source={{uri: URICONST.NOTIFICATION_ICON}}
         />
       ),
-      headerTitle: 'Dismiss',
+      headerTitle: STRING_CONSTANTS.DISMISS,
       headerRight: (
         <Button
           onPress={() => this.props.navigation.goBack()}
@@ -42,8 +43,8 @@ export default class Notifications extends React.Component {
 
     state = {
       isImageSet: false,
-      cameraImage: this.getImageFromDBOrPlaceHolder() ? this.getImageFromDBOrPlaceHolder() :'https://img.icons8.com/ios/150/000000/user-male-circle.png',
-      image: this.getImageFormSecureStorage() ? this.getImageFormSecureStorage() :'https://img.icons8.com/ios/150/000000/user-male-circle.png', //gallary
+      cameraImage: this.getImageFromDBOrPlaceHolder() ? this.getImageFromDBOrPlaceHolder() : URICONST.USER_ICON,
+      image: this.getImageFormSecureStorage() ? this.getImageFormSecureStorage() : URICONST.USER_ICON, //gallary
       isCameraAllowed: false,
       isGallaryAllows: false,
       isCameraOrGallary: false,    
@@ -53,46 +54,7 @@ export default class Notifications extends React.Component {
       user:'',
 
     };
-   /* render() {
-      const { hasCameraPermission } = this.state;
-      if (hasCameraPermission === null) {
-        return <View />;
-      } else if (hasCameraPermission === false) {
-        return <Text>No access to camera</Text>;
-      } else {
-        return (
-          <View style={{ flex: 1 }}>
-            <Camera style={{ flex: 1 }} type={this.state.type}>
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: 'transparent',
-                  flexDirection: 'row',
-                }}>
-                <TouchableOpacity
-                  style={{
-                    flex: 0.1,
-                    alignSelf: 'flex-end',
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    this.setState({
-                      type: this.state.type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back,
-                    });
-                  }}>
-                  <Text
-                    style={{ fontSize: 18, marginBottom: 10, color: 'white' }}>
-                    {' '}Flip{' '}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </Camera>
-          </View>
-        );
-      }
-    } */
+   
   
     render() {
       let { image } = this.state;
@@ -149,9 +111,9 @@ export default class Notifications extends React.Component {
         return (
           <View>
              <Picker selectedValue = {this.state.user} onValueChange = {this.callCameraOrGallary}>
-                <Picker.Item label = "Click here to set picture." value = "NoPic" />
-                <Picker.Item label = "click from Camera" value = "cameraSelected" />
-                <Picker.Item label = "select from  Gallary or Photos" value = "gallarySelected" />
+                <Picker.Item label = {STRING_CONSTANTS.SETPICTURE_MSG} value = "NoPic" />
+                <Picker.Item label = {STRING_CONSTANTS.CAMERA_TITLE} value = "cameraSelected" />
+                <Picker.Item label = {STRING_CONSTANTS.GALLARY_TITLE} value = "gallarySelected" />
              </Picker>
              <Text style = {styles.text}>{this.state.user}</Text>
           </View>
@@ -162,28 +124,27 @@ export default class Notifications extends React.Component {
             <View style = {styles.container} >
                         <Button 
                           onPress={() => this.props.navigation.goBack()}
-                          title="Go back home"
+                          title={STRING_CONSTANTS.GOBACKHOME}
                         />
                         <Image source={{ uri: this.state.cameraImage }} style={{top:30, width: 90, height: 90,borderRadius: 90/2, }} />
                             <Text numberOfLines={1} style = {styles.text}>
-                                {'fetched from AsyncStorage '}
+                                {STRING_CONSTANTS.ASYNCHSTORE_FETCH}
                             </Text>
                         <Image source={{ uri: this.state.image }} style={{left:5 ,top:30, width: 90, height: 90,borderRadius: 90/2, }} />
                            <Text numberOfLines={1} style = {styles.text}>
-                                {'fetched from Secure store'}
+                                {STRING_CONSTANTS.SECURESTORE_FETCH}
                             </Text>
                         <TouchableHighlight 
                             style ={{
                                 height: 40,
                                 width:220,
                                 borderRadius:10,
-                             //   backgroundColor : "yellow",
                                 marginLeft :20,
                                 marginRight:20,
                                 marginTop :75
                         }}>
                           <Button 
-                          title="Click here to  set Image."
+                          title= {STRING_CONSTANTS.CLICKHERE}
                           onPress = { this.callGallarOrCameraFUnc.bind(this)}
                           />
                        </TouchableHighlight>        
@@ -208,8 +169,7 @@ export default class Notifications extends React.Component {
 
       setImageFromAsynch() {
 
-          fetchDataFromAsynch('profileImage').then( (profile) => {
-
+          fetchDataFromAsynch(KeyConst.ASYNCH_STORE_Key).then( (profile) => {
             console.log('Fetched URL'+profile);
             this.setState({ image: profile,cameraImage: profile,isCameraAllowed: false,isShowPicker:false  });
 
@@ -221,7 +181,7 @@ export default class Notifications extends React.Component {
       getImageFromDBOrPlaceHolder() {
 
         var isAvilable = false
-        fetchDataFromAsynch('profileImage').then( (profile) => {
+        fetchDataFromAsynch(KeyConst.ASYNCH_STORE_Key).then( (profile) => {
          
           if (profile !== null) {
             isAvilable = true
@@ -239,10 +199,9 @@ export default class Notifications extends React.Component {
       getImageFormSecureStorage() {
         var isGallaryAvilable = false
 
-         fetchDataFromSecureStore('ProfilePic').then( (profileImage) => {
+         fetchDataFromSecureStore(KeyConst.SECURE_STORE_Key).then( (profileImage) => {
 
           if (profileImage !== null) {
-          
             console.log('Seure URL- '+profileImage);
             this.setState({ image: profileImage, isCameraAllowed: false,isShowPicker:false  });
             isGallaryAvilable = true
@@ -260,7 +219,7 @@ export default class Notifications extends React.Component {
 
       setImageFromSecureStore() {
 
-        fetchDataFromSecureStore('ProfilePic').then( (profileImage) => {
+        fetchDataFromSecureStore(KeyConst.SECURE_STORE_Key).then( (profileImage) => {
           this.setState({ image: profileImage,cameraImage: profileImage,isCameraAllowed: false,isShowPicker:false  });
         }).catch((error) => {
           console.log('EXception SeureStore'+error); 
@@ -304,9 +263,7 @@ export default class Notifications extends React.Component {
   
       console.log(result);
       if (!result.cancelled) {
-       // storeDataInAsynch('profileImage',result.uri);
-        storeDataInSecureStore('ProfilePic',result.uri);
-      //  this.setState({ image: result.uri,cameraImage: result.uri });
+        storeDataInSecureStore(KeyConst.SECURE_STORE_Key,result.uri);
         this.setState({ image: result.uri, isCameraAllowed: false,isShowPicker:false  });
 
       }
@@ -333,7 +290,6 @@ export default class Notifications extends React.Component {
       }
     }
     didSelectCancel = () => {
-     // this.setState({ image: null,cameraImage: null,isCameraAllowed: false  });
      this.setState({ isCameraAllowed: false,isShowPicker:false  });
 
     }
@@ -344,11 +300,8 @@ export default class Notifications extends React.Component {
   
     onPictureSaved = async photo => {
         console.log('Photo click called'+JSON.stringify(photo))
-        storeDataInAsynch('profileImage',photo.uri);
-       // storeDataInSecureStore('ProfilePic',photo.uri);
-       // this.setState({ image: photo.uri,cameraImage: photo.uri,isCameraAllowed: false,isShowPicker:false  });
+        storeDataInAsynch(KeyConst.ASYNCH_STORE_Key,photo.uri);
         this.setState({ cameraImage: photo.uri,isCameraAllowed: false,isShowPicker:false  });
-
     }
   
   }
@@ -356,7 +309,6 @@ export default class Notifications extends React.Component {
 
   const styles = StyleSheet.create({
     baseText: {
-     // justifyContent:'center',
       fontSize: 16,
       width: 120, 
       height: 35,
@@ -377,9 +329,7 @@ export default class Notifications extends React.Component {
      width:100,
      height:45,
      paddingTop:30
-     //backgroundColor: '#F1C167',
-    //  marginTop: 30,
-    //  marginBottom: 30
+
    },container: {
         flex:1,
       flexDirection: 'column',

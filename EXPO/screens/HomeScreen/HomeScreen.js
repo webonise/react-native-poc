@@ -1,8 +1,8 @@
 
 import React, { Component } from "react";
 import AsyncImageAnimated from 'react-native-async-image-animated';
-import AndroidOpenSettings from 'react-native-android-open-settings'
-//import GPSState from 'react-native-gps-state'
+import AndroidOpenSettings from 'react-native-android-open-settings';
+import STRING_CONSTANTS from '../../constants/STRING_CONSTANTS';
 
 import {
   Button,
@@ -21,26 +21,25 @@ import {
 import { Constants, Location,  MapView, ScreenOrientation,IntentLauncherAndroid,IntentLauncher,Permissions } from "expo";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import Geocoder from 'react-native-geocoding';
-import { APIConst } from '../screens/Constants';
-import RequestManager from '../screens/RequestManager';
+import { APIConst, URICONST, KeyConst } from '../Constants'; 
+import RequestManager from '../RequestManager';
 import { createStackNavigator, createDrawerNavigator,createAppContainer,DrawerNavigator } from "react-navigation";
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
-import LinksScreen from "../screens/LinksScreen";
-import Notifications from "../screens/Notifications";
-//import Permissions from 'react-native-permissions'
+import LinksScreen from "../LinksScreen";
+import Notifications from "../Notifications";
+import DemoList from '../DemoList';
+import  {homestyles}  from '../../screens/HomeScreen/HomeScreen.StyleSheet';
 
-//import GPSState from 'react-native-gps-state'
-//import NearByHotel from "../screens/NearByHotel"
 const {width, height} = Dimensions.get('window');
 
 
 class HomeScreen extends Component {
     static navigationOptions = {
-      drawerLabel: 'Near by me',
+      drawerLabel: STRING_CONSTANTS.NEARBY_ME_TITLE ,
       drawerIcon:({tintColor}) => (
         <Image 
           style={{ width: 32, height: 32 }}
-          source={{uri: 'https://img.icons8.com/ios/50/000000/3-star-hotel.png'}}
+          source={{uri: URICONST.NearBy_Icon}}
         />
       )
     };
@@ -275,11 +274,8 @@ class HomeScreen extends Component {
         ]
       }
     ];
-    componentDidMount() {
-      Geocoder.init("AIzaSyD7JZmztK5wE-80P8t-_IOHZQinVtx4Dio");
-     // this.gpsONOffCheck();
-    }
- 
+    
+   
     callNearByPlacesAPI(location) {
     
       const fullURL = APIConst.baseURL+JSON.stringify(location.coords.latitude)+','+JSON.stringify(location.coords.longitude)+APIConst.URNConst.nearByURN+APIConst.apiKey
@@ -301,12 +297,12 @@ class HomeScreen extends Component {
 
     pinPointSearchedLocation(location) {
       console.log("Pinporint location"+location);
-    this.setState({
-      latLng: {
-        latitude: location.latitude,
-        longitude: location.longitude
-      }
-      });
+      this.setState({
+        latLng: {
+          latitude: location.latitude,
+          longitude: location.longitude
+        }
+        });
     }
 
     calculateDistanceBetLatAndLong(lat1, lon1, lat2, lon2, unit) {
@@ -330,131 +326,21 @@ class HomeScreen extends Component {
         return dist;
       }
     }
-
-    callPermissionsFunc = async () =>  {
-      console.log("1");
-      let { status } = await Permissions.askAsync(Permissions.LOCATION);
-      if (status !== 'granted') {
-        console.log('LOCATION Not Granted');
-        this.setState({
-          errorMessage: 'Permission to access location was denied',
-          permisionsStatus:false
-        });
-        return
-      }
-        console.log('LOCATION called');
-        let isLocationEnabled =  Location.hasServicesEnabledAsync()
-       console.log("isLocationEnabled"+JSON.stringify(isLocationEnabled));
-       if (!isLocationEnabled) {
-          this.setState({
-            errorMessage: 'Permission to access location was denied',
-            permisionsStatus:false
-          });
-          alert('Location is disbled');  
-
-         return 
-       }
-       let locations = await Location.getCurrentPositionAsync({});
-
-      console.log('LOCATION Data'+JSON.stringify(locations));
-      this.setState({
-        location: locations,
-        permisionsStatus:true
-      });
-    }
-    
-    callUserPermission  = async () => {
-      const { Permissions } = Expo;
-      const { status } = await Permissions.getAsync(Permissions.LOCATION);
-      console.log('Permissions 12123'+status);
-
-      if (status !== 'granted') {
-        const { status } = await Expo.Permissions.askAsync(Expo.Permissions.LOCATION);
-                 console.log("Status: "+status);
-        console.log('expo permission'+status);
-
-       if (status === 'granted') {
-          let gps = await Location.getProviderStatusAsync();
-          console.log('Accepted');
-          if (Platform.OS == 'ios') {
-            this._callLocatioWithAPI()
-          }else {
-            if (gps.gpsAvailable ===  true) {
-              console.log('GPS _callLocatioWithAPI'); 
-              this._callLocatioWithAPI()
-            
-            }else {
-              this.setState({
-                errorMessage: 'Permission to access location was denied',
-                permisionsStatus:false 
-              });
-                console.log('Not accepted');
-            }
-          }
-          
-       }else {
-          console.log('NOt granted');
-          this.setState({
-            permisionsStatus:false
-          });
-
-          Permissions.request(permission, options)
-          .then(res => {
-            this.setState({
-              status: { ...this.state.status, [permission]: res },
-            })
-            if (res != 'authorized') {
-              var buttons = [{ text: 'Cancel', style: 'cancel' }]
-              if (this.state.canOpenSettings)
-                buttons.push({
-                  text: 'Open Settings',
-                  onPress: this._openSettings,
-                })
-    
-              Alert.alert(
-                'Whoops!',
-                'There was a problem getting your permission. Please enable it from settings.',
-                buttons,
-              )
-            }
-          })
-          .catch(e => console.warn(e))
- 
-       }
-
-      }else {
-            
-        let gps = await Location.getProviderStatusAsync();
-        if (Platform.OS === 'ios') {
-          this._callLocatioWithAPI()
-        }else {
-          if (gps.gpsAvailable ===  true) {
-            console.log('gpsAvauabe');
-            this._callLocatioWithAPI()
-          }else {
-             alert('Hey! Enable locations from setting.');
-          }
-        }
-      
-           
-      }
-    }
   
-  componentWillMount() {
-    ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
-    if (Platform.OS === "android" && !Constants.isDevice) {
-      console.log("componentWillMount Permission denied");
-      this.setState({
-        errorMessage:
-          "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
-      });
-    } else {
-      this._getLocationAsync()
-     // this.callUserPermission();
-    // this.androidIOSPermssions();
-    } 
-    
-  }
+    componentDidMount() {
+      Geocoder.init(KeyConst.GOOGLEAPI_KEY);
+      ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
+      if (Platform.OS === "android" && !Constants.isDevice) {
+        this.setState({
+          errorMessage:
+            "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
+        });
+      } else {
+        this._getLocationAsync()
+      } 
+    }
+ 
+  
    
     _getLocationAsync = async () => {
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -463,11 +349,11 @@ class HomeScreen extends Component {
        if (status !== "granted") {
   
          Alert.alert(
-       'Grant Permission',
-       'App needs location access.',
+       STRING_CONSTANTS.GRANT_PERMISSION,
+       STRING_CONSTANTS.APPLOCATION_ACCESS,
        [
-         {text: 'Cancel', onPress: () => this.props.navigation.goBack(null) , style: 'cancel'},
-         {text: 'OK', onPress: async () => {
+         {text: STRING_CONSTANTS.CANCEL_TITLE, onPress: () => this.props.navigation.goBack(null) , style: 'cancel'},
+         {text: STRING_CONSTANTS.OK_TITLE, onPress: async () => {
            const { status } = await Expo.Permissions.askAsync(Expo.Permissions.LOCATION);
            console.log("STATUS ALERT"+status);
            if (status === "granted") {
@@ -537,32 +423,32 @@ class HomeScreen extends Component {
       this.setState({ location: location });
     };
  
-  calllNotGrantedAlert() {
-    Alert.alert('Enable location','Please enable location from settings',[{text: 'Cancel', onPress: () => {
-      this.setState({ 
-        permisionsStatus:false
-      });
-    } , style: 'cancel'},
-          {text: 'OK', onPress: async () => {
-              if (Platform.OS === 'ios') {
-                  const url = 'app-settings:'
-                  Linking.canOpenURL(url).then(supported => {
-                    if (!supported) {
-                      console.log('Can\'t handle url: ' + url);
-                    } else {
-                      return  Linking.openURL(url)
-                    }
-                  }).catch(err => console.error('An error occurred', err));
+  // calllNotGrantedAlert() {
+  //   Alert.alert('Enable location','Please enable location from settings',[{text: 'Cancel', onPress: () => {
+  //     this.setState({ 
+  //       permisionsStatus:false
+  //     });
+  //   } , style: 'cancel'},
+  //         {text: 'OK', onPress: async () => {
+  //             if (Platform.OS === 'ios') {
+  //                 const url = 'app-settings:'
+  //                 Linking.canOpenURL(url).then(supported => {
+  //                   if (!supported) {
+  //                     console.log('Can\'t handle url: ' + url);
+  //                   } else {
+  //                     return  Linking.openURL(url)
+  //                   }
+  //                 }).catch(err => console.error('An error occurred', err));
 
-                }else {
-                  AndroidOpenSettings.locationSourceSettings()
-                 // IntentLauncher.startActivityAsync(IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS);
-                }
-          }},
-        ],{ cancelable: false })
+  //               }else {
+  //                 AndroidOpenSettings.locationSourceSettings()
+  //                // IntentLauncher.startActivityAsync(IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS);
+  //               }
+  //         }},
+  //       ],{ cancelable: false })
 
-        _callLocatioWithAPI()
-  }
+  //       _callLocatioWithAPI()
+  // }
   
 
 
@@ -575,131 +461,9 @@ class HomeScreen extends Component {
     this.setState({ location: location, permisionsStatus:true });
   }
 
-  callGPSLocationSettings() {
-    Alert.alert(
-      'Enable Location',
-      'Please enable location.',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {text: 'OK', onPress: () => {
-                if (Platform.OS === 'ios') {
-                  console.log("ios platfrom");
-                  const url = 'app-settings:'
-                  Linking.canOpenURL(url).then(supported => {
-                    if (!supported) {
-                      console.log('Can\'t handle url: ' + url);
-                    } else {
-                      return  Linking.openURL(url)
-                    }
-                  }).catch(err => console.error('An error occurred', err));
-          
-               }else {
-                 /*IntentLauncherAndroid.startActivityAsync(
-                  IntentLauncherAndroid.ACTION_LOCATION_SOURCE_SETTINGS,
-                  {},
-                  'package:' + Constants.manifest.android.package
-                 )*/
-                Permissions.canOpenSettings().then(() => alert('back to app!!'))
-               }
-        }},
-      ],
-      {cancelable: false},
-    );
-
-      
-  }
 
 
-  // _getLocationAsync = async () => {
-  //     let { status } = await Permissions.askAsync(Permissions.LOCATION);
-  //     console.log("Permission Status"+status);
-  //     if (status === "granted") {
-  //         let location = await Location.getCurrentPositionAsync({});
-  //         console.log("First Location"+JSON.stringify(location));
-        
-  //         this.callNearByPlacesAPI(location);
-  //         this.setState({ 
-  //           location: location,
-  //           permisionsStatus:true
-  //         });
-       
-  //     }else {
-        
-  //       this.setState({ 
-  //         permisionsStatus: false,
-  //         location: null,
-  //       });
-  //       console.log("permission false"+this.state.location);
-  //     }
-
-  //  if (status !== "granted") {
-  //     console.log("12 Permission to access location was denied");
-  //     Alert.alert(
-  //             'Grant Permission',
-  //             'App needs location access.',
-  //     [
-  //       {text: 'Cancel', onPress: () => {
-  //         this.setState({
-  //           permisionsStatus : false
-  //       });
-  //       } , style: 'cancel'},
-  //       {text: 'OK', onPress: async () => {
-  //         const { status } = await Expo.Permissions.askAsync(Expo.Permissions.LOCATION);
-  //         console.log("Status: "+status);
-  //         if (status === "granted") {
-  //           console.log("_getLocationAsync granted");
-  //           this.setState({
-  //               permisionsStatus : true
-  //           });
-          
-  //           const locatio = await Expo.Location.watchPositionAsync(
-  //             { enableHighAccuracy: true },
-  //             callback
-  //           );
-
-  //           this.callNearByPlacesAPI(locatio);
-  //           this.setState({ 
-  //             location: locatio,
-  //             permisionsStatus:true
-  //           });
-  //           return locatio;
-  //         } else {
-  //           console.log("_getLocationAsync granted else");
-  //           if (Platform.OS === 'ios') {
-  //               console.log("ios platfrom");
-  //               const url = 'app-settings:'
-  //               Linking.canOpenURL(url).then(supported => {
-  //                 if (!supported) {
-  //                   console.log('Can\'t handle url: ' + url);
-  //                 } else {
-  //                   return  Linking.openURL(url)
-  //                 }
-  //               }).catch(err => console.error('An error occurred', err));
-
-  //           }else {
-  //             console.log("Android Permission called");
-  //              // AndroidOpenSettings.locationSourceSettings()
-  //               IntentLauncherAndroid.startActivityAsync(
-  //                 IntentLauncherAndroid.ACTION_APPLICATION_DETAILS_SETTINGS,
-  //                 {},
-  //                 'package:' + Constants.manifest.android.package
-  //               )
-  //           }
-
-  //         }
-  //       }},
-  //     ],
-  //    { cancelable: false }
-  //  )
-
-  //   }
-   
-  // };
-
+  
   _handleMapRegionChange = mapRegion => {
     console.log("Map chnage lat"+this.state.latLng.latitude);
    // this.setState({ mapRegion });
@@ -732,17 +496,17 @@ class HomeScreen extends Component {
   }
 
   callPermissionAlert() {
-    Alert.alert('Grant Permission',
-      'App needs location access.',
+    Alert.alert(STRING_CONSTANTS.GRANT_PERMISSION,
+      STRING_CONSTANTS.ALLOW_LOCATION_PERMISSION,
       [
-        {text: 'Cancel', onPress: () => {
+        {text: STRING_CONSTANTS.CANCEL_TITLE, onPress: () => {
           console.log("Cancel tapped");
           this.setState({ 
             permisionsStatus: false
           });
 
         } , style: 'cancel'},
-        {text: 'OK', onPress: async () => {
+        {text: STRING_CONSTANTS.OK_TITLE, onPress: async () => {
           console.log("OK pressed");
           const { status } = await Expo.Permissions.askAsync(Expo.Permissions.LOCATION);
             console.log("OK allowed"+status);
@@ -766,7 +530,7 @@ class HomeScreen extends Component {
   }
 
   render() {
-    let text = "Waiting..";
+    let text = STRING_CONSTANTS.WAITING;
 
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
@@ -812,32 +576,37 @@ class HomeScreen extends Component {
                 const distanceMtr = parseFloat(distanceValue.toPrecision(2));
                 const imgeURL = 'https://maps.googleapis.com/maps/api/place/photo?photoreference='+encodeURIComponent(hotelItem.photos[0].photo_reference)+'&sensor=false&maxheight=100&maxwidth=100&key='+APIConst.apiKey
                 return (
-                  <View key={hotelItem.id} style= {{ flex:1,flexDirection: 'row',height: 120, marginBottom: 5,borderBottomColor: '#D3D3D3',
-    borderBottomWidth: 1,margin: 8}}>
+                  <View key={hotelItem.id} style= {{     
+                      flex:1,
+                      flexDirection: 'row',
+                      height: 120, 
+                      marginBottom: 5,
+                      borderBottomColor: '#D3D3D3',
+                      borderBottomWidth: 1,margin: 8
+                  }}>
                     <AsyncImageAnimated
-                      style={{
+                      style={{          
+                          alignSelf: 'stretch',
+                          height: 80,
+                          width: 80,
+                          resizeMethod: 'contain',
+                          resizeMode: 'cover',
                         
-                        alignSelf: 'stretch',
-                        height: 80,
-                        width: 80,
-                        resizeMethod: 'contain',
-                        resizeMode: 'cover',
-                       
-                     }}
+                      }}
                       source={{
                         uri: imgeURL
                       }}
                       placeholderSource= {{
-                        uri: 'https://img.icons8.com/color/100/000000/4-star-hotel.png'
+                        uri: URICONST.PlaceHolder_Icon
                       }}
                     />
                   
-                    <View key={hotelItem.name} style = {{ flex:1, justifyContent: 'center', marginLeft: 5,backgroundColor: 'white' }}>
+                    <View key={hotelItem.name} style = {homestyles.hotelTitleStyle}>
                         <Text style={{fontSize: 16}}>{hotelItem.name}</Text>
                         <Text style={{fontSize: 13}}>{hotelItem.vicinity}</Text>
                     </View>
-                    <View style={{ flexDirection: 'column',justifyContent: 'flex-start',  marginRight: 5,backgroundColor: 'white'}}>
-                        <Text style={{textAlign: 'right',fontSize: 11}} >Distance: {distanceMtr}km </Text>
+                    <View style={homestyles.distanceStyle}>
+                        <Text style={{textAlign: 'right',fontSize: 11}} >{STRING_CONSTANTS.DISTANCE} {distanceMtr}km </Text>
                    </View>
                   </View>
                 ) 
@@ -853,7 +622,7 @@ class HomeScreen extends Component {
           onPress={() => {
             this.callSettingsUI();
           }}
-          title="Allow location permission."
+          title= {STRING_CONSTANTS.ALLOW_LOCATION_PERMISSION}
         />
       );
     } else  {
@@ -862,55 +631,21 @@ class HomeScreen extends Component {
   } 
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: Constants.statusBarHeight,
-    backgroundColor: "#ecf0f1"
-  },
-  paragraph: {
-    margin: 24,
-    fontSize: 18,
-    textAlign: "center"
-  },
-  buttonContainer: {
-      width: 100,
-      height: 60,
-      marginLeft: 180,
-      marginBottom:15,
-      alignItems: 'flex-end',
-       marginRight: 50,
-       paddingTop: ( Platform.OS === 'ios' ) ? 20 : 0
-  },
-  textContainer: {
-      borderBottomWidth:1.5,
-      borderBottomColor: "black",
-      width: 200,
-      height: 60,
-      marginLeft: 15,
-      marginBottom:15,
-      alignItems: 'flex-start',
-      marginRight: 20,
-      paddingTop: ( Platform.OS === 'ios' ) ? 20 : 0
-  },
-});
 
 
  class HeaderNavigationBar extends React.Component {
   render() {
       return (<View style={{
-          height: 70,
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          alignItems: 'center'
-      }}>
+            height: 70,
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            alignItems: 'center'
+         }}>
           <TouchableHighlight style={{ marginLeft: 10, marginTop: 15 }}
               onPress={() => { this.props.navigation.openDrawer() }}>
               <Image
                   style={{ width: 32, height: 32 }}
-                  source={{uri: 'https://png.icons8.com/ios/2x/menu-filled.png'}}
+                  source={{uri: URICONST.DRAWER_ICON}}
               />
           </TouchableHighlight>
       </View>);
@@ -923,7 +658,9 @@ export default createAppContainer(createDrawerNavigator({
   },
   Notificatin: {
     screen: Notifications,
-  }/*,
+  }/*, Demo: {
+    screen:DemoList
+  },
   Links: {
     screen: LinksScreen,
   } ,NearByHotel: {

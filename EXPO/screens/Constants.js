@@ -2,28 +2,42 @@ import {Platform,AsyncStorage} from 'react-native';
 import { SecureStore } from 'expo';
 
 
-var localDB = {
+  export var localDB = {
     dbName : 'reactDemoInfoDB.db',
     tableName : {
       tblUser: 'tblUser',
     }
   }
-  // export {
-  //   localDB
-  // }
 
-   var APIConst = {
+  export var APIConst = {
       baseURL: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=',
       apiKey: 'AIzaSyAcfolOabZSM9t_m0fqgOlYVgRa5eHAwMU',
+      imageCONST: 'https://maps.googleapis.com/maps/api/place/photo?photoreference=',
+      paginatedAPIURL: 'https://reqres.in/api/users/?page=',
       //'AIzaSyD7JZmztK5wE-80P8t-_IOHZQinVtx4Dio',
       URNConst: {
-        nearByURN: '&radius=1500&type=restaurant&key='
+        nearByURN: '&radius=1500&type=restaurant&key=',
       }
+   }
+
+   export var URICONST = {
+     NearBy_Icon: 'https://img.icons8.com/ios/50/000000/3-star-hotel.png',
+     PlaceHolder_Icon: 'https://img.icons8.com/color/100/000000/4-star-hotel.png',
+     DRAWER_ICON: 'https://png.icons8.com/ios/2x/menu-filled.png',
+     NOTIFICATION_ICON: 'https://img.icons8.com/ios/50/000000/bell.png',
+     USER_ICON: 'https://img.icons8.com/ios/150/000000/user-male-circle.png',
+   }
+
+   export var KeyConst = {
+     ASYNCH_STORE_Key: 'profileImage',
+     SECURE_STORE_Key: 'ProfilePic',
+     GOOGLEAPI_KEY: 'AIzaSyD7JZmztK5wE-80P8t-_IOHZQinVtx4Dio',
+
    }
 
 /* Asynch Storage */
 
-   const storeDataInAsynch = async (key,values) => {
+   export  const storeDataInAsynch = async (key,values) => {
 
     const stringValues = JSON.stringify(values)
     console.log("Stored value"+stringValues);
@@ -37,7 +51,7 @@ var localDB = {
     
    }
 
-    const fetchDataFromAsynch = async (key) => {
+   export const fetchDataFromAsynch = async (key) => {
 
       try {
         const value = await AsyncStorage.getItem(key);
@@ -52,10 +66,11 @@ var localDB = {
         console.log("Exception in Fetch Async Storage"+error);
       }
       return null
-  }
+   }
+
 /******************************  SecureStore DB ******************************/
 
-    const storeDataInSecureStore = async (key, value) => {
+    export const storeDataInSecureStore = async (key, value) => {
         try {
             await SecureStore.setItemAsync(key, value) 
         }catch(error) {
@@ -64,7 +79,7 @@ var localDB = {
     }
 
 
-    const fetchDataFromSecureStore = async (key) => {
+    export const fetchDataFromSecureStore = async (key) => {
 
       try {
         const profileData = SecureStore.getItemAsync(key)
@@ -80,13 +95,4 @@ var localDB = {
       return null
 
     }
-
-   export {
-      APIConst,
-      localDB,
-      storeDataInAsynch,
-      fetchDataFromAsynch,
-      storeDataInSecureStore,
-      fetchDataFromSecureStore
-   };
 
