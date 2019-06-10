@@ -1,6 +1,5 @@
-import {Platform,AsyncStorage} from 'react-native';
+import {AsyncStorage} from 'react-native';
 import { SecureStore } from 'expo';
-
 
   export var localDB = {
     dbName : 'reactDemoInfoDB.db',
@@ -8,24 +7,14 @@ import { SecureStore } from 'expo';
       tblUser: 'tblUser',
     }
   }
-
-  export var APIConst = {
-      baseURL: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=',
-      apiKey: 'AIzaSyAcfolOabZSM9t_m0fqgOlYVgRa5eHAwMU',
-      imageCONST: 'https://maps.googleapis.com/maps/api/place/photo?photoreference=',
-      paginatedAPIURL: 'https://reqres.in/api/users/?page=',
-      //'AIzaSyD7JZmztK5wE-80P8t-_IOHZQinVtx4Dio',
-      URNConst: {
-        nearByURN: '&radius=1500&type=restaurant&key=',
-      }
-   }
-
+  
    export var URICONST = {
      NearBy_Icon: 'https://img.icons8.com/ios/50/000000/3-star-hotel.png',
      PlaceHolder_Icon: 'https://img.icons8.com/color/100/000000/4-star-hotel.png',
      DRAWER_ICON: 'https://png.icons8.com/ios/2x/menu-filled.png',
      NOTIFICATION_ICON: 'https://img.icons8.com/ios/50/000000/bell.png',
      USER_ICON: 'https://img.icons8.com/ios/150/000000/user-male-circle.png',
+     IOS_SETTINGS :  'app-settings:'
    }
 
    export var KeyConst = {
@@ -89,7 +78,6 @@ import { SecureStore } from 'expo';
 
       }catch(error) {
           console.log("Exception in getDataFromSecureStore"+error);
-
       }
       
       return null

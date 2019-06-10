@@ -10,10 +10,8 @@ import {
   Platform,
   Text,
   View,
-  StyleSheet,
   Image,
   ActivityIndicator,
-  TextInput,
   Dimensions,
   Alert,
   PermissionsAndroid
@@ -21,17 +19,18 @@ import {
 import { Constants, Location,  MapView, ScreenOrientation,IntentLauncherAndroid,IntentLauncher,Permissions } from "expo";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import Geocoder from 'react-native-geocoding';
-import { APIConst, URICONST, KeyConst } from '../Constants'; 
+import { URICONST, KeyConst } from '../Constants'; 
 import RequestManager from '../RequestManager';
-import { createStackNavigator, createDrawerNavigator,createAppContainer,DrawerNavigator } from "react-navigation";
+import {  createDrawerNavigator,createAppContainer } from "react-navigation";
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import LinksScreen from "../LinksScreen";
 import Notifications from "../Notifications";
 import DemoList from '../DemoList';
 import  {homestyles}  from '../../screens/HomeScreen/HomeScreen.StyleSheet';
+import Utility from '../../constants/Utility'
+import {APIConst} from '../../constants/APIConst'
 
 const {width, height} = Dimensions.get('window');
-
 
 class HomeScreen extends Component {
     static navigationOptions = {
@@ -279,24 +278,21 @@ class HomeScreen extends Component {
     callNearByPlacesAPI(location) {
     
       const fullURL = APIConst.baseURL+JSON.stringify(location.coords.latitude)+','+JSON.stringify(location.coords.longitude)+APIConst.URNConst.nearByURN+APIConst.apiKey
-      console.log("FInal URL- "+fullURL);
+      //console.log("FInal URL- "+fullURL);
       RequestManager.requestGET(fullURL).then(res => res.json()).then(data => {
-          console.log("API Response :: "+JSON.stringify(data.results));
+          //console.log("API Response :: "+JSON.stringify(data.results));
           this.setState({ 
             location: location,
             hotelsList: data.results,
           });
         })
         .catch(function(error) {
-          console.log(
-            "There has been a problem with your fetch operation: " + error
-          );
+          console.log("There has been a problem with your fetch operation: " + error );
           throw error;
         });
     }
 
     pinPointSearchedLocation(location) {
-      console.log("Pinporint location"+location);
       this.setState({
         latLng: {
           latitude: location.latitude,
@@ -305,27 +301,7 @@ class HomeScreen extends Component {
         });
     }
 
-    calculateDistanceBetLatAndLong(lat1, lon1, lat2, lon2, unit) {
-      if ((lat1 == lat2) && (lon1 == lon2)) {
-        return 0;
-      }
-      else {
-        var radlat1 = Math.PI * lat1/180;
-        var radlat2 = Math.PI * lat2/180;
-        var theta = lon1-lon2;
-        var radtheta = Math.PI * theta/180;
-        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-        if (dist > 1) {
-          dist = 1;
-        }
-        dist = Math.acos(dist);
-        dist = dist * 180/Math.PI;
-        dist = dist * 60 * 1.1515;
-        if (unit=="K") { dist = dist * 1.609344 }
-        if (unit=="N") { dist = dist * 0.8684 }
-        return dist;
-      }
-    }
+  
   
     componentDidMount() {
       Geocoder.init(KeyConst.GOOGLEAPI_KEY);
@@ -338,13 +314,13 @@ class HomeScreen extends Component {
       } else {
         this._getLocationAsync()
       } 
+      
     }
  
-  
+
    
     _getLocationAsync = async () => {
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
-      console.log("Permission Status"+status);
   
        if (status !== "granted") {
   
@@ -355,47 +331,39 @@ class HomeScreen extends Component {
          {text: STRING_CONSTANTS.CANCEL_TITLE, onPress: () => this.props.navigation.goBack(null) , style: 'cancel'},
          {text: STRING_CONSTANTS.OK_TITLE, onPress: async () => {
            const { status } = await Expo.Permissions.askAsync(Expo.Permissions.LOCATION);
-           console.log("STATUS ALERT"+status);
+           //console.log("STATUS ALERT"+status);
            if (status === "granted") {
-            //  const locatio = await Expo.Location.watchPositionAsync(
-            //    { enableHighAccuracy: true },
-            //    callback
-            //  );
-            let { status } = await Permissions.askAsync(Permissions.LOCATION);
-            console.log("Permission Status expo1"+status);
-            if (status === "granted") {
-              this._callLocatioWithAPI();
-              console.log("Granted location- "+JSON.stringify(locatio));
-              this.setState({ permisionsStatus: true });
-            }else {
-              this.setState({ permisionsStatus: false });
-            }
+         
+              let { status } = await Permissions.askAsync(Permissions.LOCATION);
+              ////console.log("Permission Status expo1"+status);
+              if (status === "granted") {
+                this._callLocatioWithAPI();
+                this.setState({ permisionsStatus: true });
+              }else {
+                this.setState({ permisionsStatus: false });
+              }
            
-           //  return locatio;
            } else {
             let { status } = await Permissions.askAsync(Permissions.LOCATION);
-            console.log("Permission Status expo1"+status);
+            //console.log("Permission Status expo1"+status);
             if (status === "granted") {
               this._callLocatioWithAPI();
-              console.log("Granted location- "+JSON.stringify(locatio));
               this.setState({ permisionsStatus: true });
             }else {
-             // this.setState({ permisionsStatus: false });
-              if (Platform.OS === 'ios') {
-                console.log("ios platfrom");
-                const url = 'app-settings:'
-                Linking.canOpenURL(url).then(supported => {
-                  if (!supported) {
-                    console.log('Can\'t handle url: ' + url);
-                  } else {
-                    return  Linking.openURL(url)
-                  }
-                }).catch(err => console.error('An error occurred', err));
-
-                }else {
-                  console.log("Android Permission called");
+            
+                if (Utility.sharedInstance().isAndroid()) {
                   AndroidOpenSettings.locationSourceSettings()
+                 
+                }else {
+                  Linking.canOpenURL(URICONST.IOS_SETTINGS).then(supported => {
+                    if (!supported) {
+                      console.log('Can\'t handle url: ' + url);
+                    } else {
+                      return  Linking.openURL(url)
+                    }
+                  }).catch(err => console.error('An error occurred', err));
                 }
+                
             }
             
   
@@ -409,74 +377,37 @@ class HomeScreen extends Component {
           errorMessage: "Permission to access location was not granted"
         });
       }else if (status === "denied") {
-        console.log("Permission to access location was denied");
-  
-         this.setState({
+           this.setState({
           errorMessage: "Permission to access location was denied"
          // permisionsStatus:false
         });
       }
-      console.log("locatiobn ");
       let location = await Location.getCurrentPositionAsync({});
       console.log("First Location"+JSON.stringify(location));
       this.callNearByPlacesAPI(location);
       this.setState({ location: location });
     };
  
-  // calllNotGrantedAlert() {
-  //   Alert.alert('Enable location','Please enable location from settings',[{text: 'Cancel', onPress: () => {
-  //     this.setState({ 
-  //       permisionsStatus:false
-  //     });
-  //   } , style: 'cancel'},
-  //         {text: 'OK', onPress: async () => {
-  //             if (Platform.OS === 'ios') {
-  //                 const url = 'app-settings:'
-  //                 Linking.canOpenURL(url).then(supported => {
-  //                   if (!supported) {
-  //                     console.log('Can\'t handle url: ' + url);
-  //                   } else {
-  //                     return  Linking.openURL(url)
-  //                   }
-  //                 }).catch(err => console.error('An error occurred', err));
-
-  //               }else {
-  //                 AndroidOpenSettings.locationSourceSettings()
-  //                // IntentLauncher.startActivityAsync(IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS);
-  //               }
-  //         }},
-  //       ],{ cancelable: false })
-
-  //       _callLocatioWithAPI()
-  // }
-  
-
 
   _callLocatioWithAPI = async () => {
-    console.log("_callLocatioWithAPI called");
    let location=   await Location.getCurrentPositionAsync({});
-    //await Location.getCurrentPositionAsync({enableHighAccuracy: true});
-    console.log("MyLocation: "+JSON.stringify(location));
     this.callNearByPlacesAPI(location);
     this.setState({ location: location, permisionsStatus:true });
   }
 
-
-
-  
   _handleMapRegionChange = mapRegion => {
-    console.log("Map chnage lat"+this.state.latLng.latitude);
+    //console.log("Map chnage lat"+this.state.latLng.latitude);
    // this.setState({ mapRegion });
   };
  
   callSettingsUI() {
 
         if (Platform.OS === 'ios') {
-            console.log("ios platfrom");
+            //console.log("ios platfrom");
             const url = 'app-settings:'
             Linking.canOpenURL(url).then(supported => {
               if (!supported) {
-                console.log('Can\'t handle url: ' + url);
+                //console.log('Can\'t handle url: ' + url);
               } else {
                 return  Linking.openURL(url)
               }
@@ -500,18 +431,18 @@ class HomeScreen extends Component {
       STRING_CONSTANTS.ALLOW_LOCATION_PERMISSION,
       [
         {text: STRING_CONSTANTS.CANCEL_TITLE, onPress: () => {
-          console.log("Cancel tapped");
+          //console.log("Cancel tapped");
           this.setState({ 
             permisionsStatus: false
           });
 
         } , style: 'cancel'},
         {text: STRING_CONSTANTS.OK_TITLE, onPress: async () => {
-          console.log("OK pressed");
+          //console.log("OK pressed");
           const { status } = await Expo.Permissions.askAsync(Expo.Permissions.LOCATION);
-            console.log("OK allowed"+status);
+            //console.log("OK allowed"+status);
             if (status === "granted") {
-              console.log("12vbOK allowed"+status);
+              //console.log("12vbOK allowed"+status);
 
               const locatio = await Expo.Location.watchPositionAsync(
                 { enableHighAccuracy: true },
@@ -519,7 +450,7 @@ class HomeScreen extends Component {
               );
               return locatio;
             } else {
-              console.log("callPermissionAlert else");
+              //console.log("callPermissionAlert else");
                 this.callPermissionAlert();
 
             }  
@@ -537,7 +468,6 @@ class HomeScreen extends Component {
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
     }
-    console.log("Render: "+this.state.permisionsStatus);
     if (this.state.location ) {
       return (
         
@@ -572,7 +502,7 @@ class HomeScreen extends Component {
           )}>
           <View style={{height: 2900 }}>
               {this.state.hotelsList.map(hotelItem => {
-                const distanceValue = this.calculateDistanceBetLatAndLong(this.state.location.coords.latitude,this.state.location.coords.longitude,hotelItem.geometry.location.lat,hotelItem.geometry.location.lng,'KM')
+                const distanceValue = Utility.sharedInstance().calculateDistanceBetLatAndLong(this.state.location.coords.latitude,this.state.location.coords.longitude,hotelItem.geometry.location.lat,hotelItem.geometry.location.lng,'KM')
                 const distanceMtr = parseFloat(distanceValue.toPrecision(2));
                 const imgeURL = 'https://maps.googleapis.com/maps/api/place/photo?photoreference='+encodeURIComponent(hotelItem.photos[0].photo_reference)+'&sensor=false&maxheight=100&maxwidth=100&key='+APIConst.apiKey
                 return (
@@ -584,8 +514,7 @@ class HomeScreen extends Component {
                       borderBottomColor: '#D3D3D3',
                       borderBottomWidth: 1,margin: 8
                   }}>
-                    <AsyncImageAnimated
-                      style={{          
+                    <AsyncImageAnimated style={{          
                           alignSelf: 'stretch',
                           height: 80,
                           width: 80,

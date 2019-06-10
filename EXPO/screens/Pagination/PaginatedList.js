@@ -1,15 +1,11 @@
 import React from "react";
 import {Alert, ListView, FlatList, StyleSheet, Text, View, Image,Dimensions,ActivityIndicator,Orientation,ScrollView,NetInfo } from "react-native";
 import { Button, Icon } from "react-native-elements";
-import { ExpoLinksView } from "@expo/samples";
-import Placeholder from "rn-placeholder";
 import { ScreenOrientation,Constants, SQLite } from 'expo';
 import { localDB } from '../Constants';
-import OfflineNotice from '../OfflineNotice'
-import MiniOfflineSign from '../OfflineNotice'
 import STRING_CONSTANTS from '../../constants/STRING_CONSTANTS';
-import { APIConst } from '../Constants';
 import  {PaginatedStyles}  from '../../screens/Pagination/PaginatedList.StyleSheet'
+import {APIConst} from '../../constants/APIConst'
 
 const db = SQLite.openDatabase('ReactInfoDB.db');
 
@@ -44,7 +40,6 @@ export default class PaginatedList extends React.Component {
 
       return (
         <View style={PaginatedStyles.rootViewStyle}>
-          <OfflineNotice /> 
           <FlatList
             keyExtractor={(item, index) => index.toString()}
             ItemSeparatorComponent = {this.renderSeparator}
@@ -125,24 +120,15 @@ export default class PaginatedList extends React.Component {
             style = {{height:1, width:'100%',backgroundColor: '#778899'}}>
           </View>
       )
-    }
-
-    componentWillUnmount() {
-      NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
-    }
+    }   
 
     componentDidMount() {
       ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
-      NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
-      /*if (!this.state.isConnected) {
-        this.initialInfo(this.state.page);
-        this.fetchDB();
-      }else { */
+  
         this.deleteTable();
         this.createDB();
         this.initialInfo(this.state.page);
-      //}
-    }
+     }
 
     handleConnectivityChange = isConnected => {
       this.setState({ isConnected });

@@ -10,9 +10,8 @@ import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import LinksScreen from "../screens/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import GridScreen from "../screens/GridScreen";
 import PaginatedList from '../screens/Pagination/PaginatedList';
-import MapScreen from "../screens/MapScreen";
+//import MapScreen from "../screens/MapScreen";
 import DrawerScreen from "../screens/DrawerScreen";
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -37,7 +36,7 @@ HomeStack.navigationOptions = {
 const LinksStack = createStackNavigator({
   Links: LinksScreen,
   Grid: PaginatedList,
-  Map: MapScreen
+ // Map: MapScreen
 });
 
 LinksStack.navigationOptions = {
