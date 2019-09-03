@@ -17,23 +17,6 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
-  componentDidMount() {
-    this.callAPI();
-  }
-
-  callAPI() {
-    NetworkManager.requestGET("https://reqres.in/api/users/?page=1")
-      .then(response => {
-        if (response.status === 200) {
-          console.log("Success" + JSON.stringify(response));
-        } else {
-          console.log("failed" + JSON.stringify(response));
-        }
-      })
-      .catch(error => {
-        console.log("Error" + error);
-      });
-  }
   render() {
     return (
       <View style={styles.container}>
