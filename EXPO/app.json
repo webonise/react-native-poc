@@ -1,29 +1,29 @@
 {
   "expo": {
-    "name": "AWESOME EXPO",
+    "name": "Webo Native Gallery",
     "slug": "EXPO",
     "privacy": "public",
     "sdkVersion": "32.0.0",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "platforms": ["ios", "android"],
+    "version": "1.0.1",
+    "icon": "./assets/images/1234.png",
+    "orientation": "default",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/splashWebonise.png",
+    // "resizeMode": "contain",
+      "backgroundColor": "#ffffff",
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.weboniselab.DemoReactApp"
+    },
+    "android": {
+      "package": "com.weboniselab.DemoReactApp",
+      "permissions": ["ACCESS_FINE_LOCATION"]
     }
   }
 }

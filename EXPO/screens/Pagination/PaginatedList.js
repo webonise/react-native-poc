@@ -1,0 +1,275 @@
+import React from "react";
+import {Alert, ListView, FlatList, StyleSheet, Text, View, Image,Dimensions,ActivityIndicator,Orientation,ScrollView,NetInfo } from "react-native";
+import { Button, Icon } from "react-native-elements";
+import { ScreenOrientation,Constants, SQLite } from 'expo';
+import { localDB } from '../Constants';
+import STRING_CONSTANTS from '../../constants/STRING_CONSTANTS';
+import  {PaginatedStyles}  from '../../screens/Pagination/PaginatedList.StyleSheet'
+import {APIConst} from '../../constants/APIConst'
+
+const db = SQLite.openDatabase('ReactInfoDB.db');
+
+export default class PaginatedList extends React.Component {
+
+    constructor(props) {
+      super(props);
+        this.state = {  
+          isConnected: true,
+          userList: [],
+          page: 1,
+          per_page: 0,
+          total: 0,
+          total_pages: 0,
+          refreshing: false,
+          dataReady: false,
+          loading: true,
+          isLoadMore: false
+        };  
+
+    }
+
+    static navigationOptions = {
+      title: STRING_CONSTANTS.PAGINATED_TITLE,
+    };
+
+    render() {
+
+      if (this.state.loading && this.page === 1 && this.total_pages != this.page) {
+        return <View style={PaginatedStyles.activityIndicatorStyle}><ActivityIndicator style={{ color: '#000' }} /></View>;
+      }
+
+      return (
+        <View style={PaginatedStyles.rootViewStyle}>
+          <FlatList
+            keyExtractor={(item, index) => index.toString()}
+            ItemSeparatorComponent = {this.renderSeparator}
+            data={this.state.userList}
+            extraData={this.state}
+            numColumns={1}
+            renderItem={this._renderItem}
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+            ListFooterComponent={this.renderFooter.bind(this)}
+          onEndReached = {()=>
+              this.callLoadMore()
+          }
+          onEndReachedThreshold={0.1}
+          />
+          <Text>Page number - {this.state.page}</Text>
+          <Text>Number of records per page - {this.state.per_page}</Text>
+          <Text>Total - {this.state.total_pages}</Text>
+          <Text>Total Items - {this.state.total}</Text>  
+        </View>
+      );
+    }
+
+    callLoadMore() {
+      
+      if (this.state.page >= this.state.total_pages) { 
+        console.log('Last page called ')
+        return 
+      }
+
+      if (!this.state.isLoadMore) {
+        this.getUserInfo(this.state.page)
+      }
+    }
+    renderFooter = () => {
+      if (!this.state.loading) return null;
+      return (
+        <ActivityIndicator
+          style={{ color: '#000' }}
+        />
+      );
+    };
+
+    _renderItem = ({ item }) => (
+      <View style = {PaginatedStyles.parentViewStyle} >
+          <Image style= {PaginatedStyles.imageStyle}
+                source = {{uri: item.avatar}}
+          />
+          <View style = {PaginatedStyles.detailViewStyle}>
+            <Text style= {PaginatedStyles.firstNameStyle}>
+                Name:  {item.first_name}   
+            </Text>
+            <Text style= {PaginatedStyles.lastNameStyle}>
+                  Last Name: {item.last_name}
+            </Text>
+          </View>
+      </View>
+    );  
+
+    _onRefresh = () => {
+      this.deleteTable();
+      this.createDB()
+
+      this.state.page = 1;
+      this.state.userList = [];
+      this.setState({
+        page: 1,
+        userList:  [],
+        refreshing : true,
+      });
+      console.log("Pull to refresh"+this.state.page);
+      this.initialInfo(this.state.page);
+    };
+
+    renderSeparator = () => {
+      return (
+          <View
+            style = {{height:1, width:'100%',backgroundColor: '#778899'}}>
+          </View>
+      )
+    }   
+
+    componentDidMount() {
+      ScreenOrientation.allowAsync(ScreenOrientation.Orientation.ALL);
+  
+        this.deleteTable();
+        this.createDB();
+        this.initialInfo(this.state.page);
+     }
+
+    handleConnectivityChange = isConnected => {
+      this.setState({ isConnected });
+    }
+
+    getUserInfo(page) {
+
+      this.setState({ loading: true,isLoadMore: true })
+      let currentPageNumber = page+1;
+      const URL = APIConst.paginatedAPIURL+currentPageNumber;
+      return fetch(URL)
+        .then(res => res.json())
+        .then(data => {
+          if (currentPageNumber <= 1 ) {
+              this.setState({
+                userList:  [],
+              });
+          } 
+          
+        var userDataArr = data.data
+        userDataArr.map(userItem =>
+          this.updateDB(userItem.id,userItem.first_name,userItem.last_name,userItem.avatar,data.page, data.per_page,data.total,data.total_pages)
+        );
+          this.fetchDB();
+        })
+        .catch(function(error) {
+          console.log(
+            "There has been a problem with your fetch operation: " + error
+          );
+          throw error;
+        });
+    }
+
+    initialInfo(page) {
+    
+      let currentPageNumber = page;
+    // console.log("Inital current page " + currentPageNumber);
+      const URL = APIConst.paginatedAPIURL+currentPageNumber;
+      return fetch(URL)
+        .then(res => res.json())
+        .then(data => {
+          const userArr = data.data
+          userArr.map(userItem =>
+            this.updateDB(userItem.id,userItem.first_name,userItem.last_name,userItem.avatar,data.page, data.per_page,data.total,data.total_pages)
+          );
+          this.fetchDB();
+        })
+        .catch(function(error) {
+          console.log( "There has been a problem with your fetch operation: " + error);
+          throw error;
+        });
+    }
+
+  /******************** Local DB ********************/
+
+    createDB() {
+      db.transaction(tx => {
+        tx.executeSql(
+          'create table if not exists UserTable (id integer primary key not null, first_name text, last_name text,avatar text, page integer,per_page integer, total integer ,total_pages integer );'
+        ),
+        error => {
+          console.log("Not able to create table ")
+        };
+      });
+    }
+
+    updateDB(id, firstName,lastName,avatar,page, per_page, total, total_pages) {
+        
+        db.transaction(
+           tx => {
+             tx.executeSql('insert into UserTable (id, first_name, last_name,avatar, page, per_page, total, total_pages ) values (?, ?, ?,?,?,?,?,?)', [id, firstName,lastName,avatar, page, per_page, total, total_pages]);
+             tx.executeSql('select * from UserTable', [], (_, { rows }) =>
+           //   console.log(JSON.stringify(rows))
+                 console.log('  Data saved ')
+             );
+           },
+            error => {
+              console.log("Excpetion data- ID-- "+id)
+            }/*,
+           sucess => {
+               console.log("- On saving Sucess -- ");
+              // this.fetchDB();
+           
+           } */
+         );
+
+    }
+
+    fetchDB() {
+
+      db.transaction(
+         tx => {
+         tx.executeSql('select * from UserTable', [], (_, { rows }) =>
+         
+                  this.setState({
+                    per_page: rows._array[rows._array.length-1].per_page,
+                    total: rows._array[rows._array.length-1].total,
+                    total_pages: rows._array[rows._array.length-1].total_pages,
+                    page: rows._array[rows._array.length-1].page,
+                    userList: rows._array,
+                    refreshing: false,
+                    dataReady: true,
+                    loading: false,
+                    isLoadMore : false,
+                  })  
+           );
+         },
+          error => {
+            console.log("On Fetch error -- ");
+            this.setState({
+              loading: false,
+              isLoadMore:false
+             });
+          }, sucess => {
+               console.log("- On Fetch Sucess -- ");
+           }
+       );
+
+    }
+
+    deleteTable() {
+      console.log("deleteTable called");
+        db.transaction(tx => {
+          tx.executeSql(
+            'drop Table UserTable;'
+          ),
+           error => {
+             console.log("On Delete error -- ");
+           },
+          sucess => {
+              console.log("- On Delete Sucess -- ");
+          };
+        });
+    }
+
+    update = () => {
+      console.log("update called");
+      //this.updateAllUI();
+    };
+}
+
+
+
+
